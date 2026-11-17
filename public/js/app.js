@@ -629,8 +629,18 @@
   // Event Delegations & Handlers
   // ==========================================
   function setupEventListeners() {
-    // Navigation Clicks (both bottom tabs & sidebar)
+    // Navigation & Quick Action clicks
     document.addEventListener('click', (e) => {
+      const actionBtn = e.target.closest('[data-action-mode]');
+      if (actionBtn) {
+        e.preventDefault();
+        const mode = actionBtn.dataset.actionMode;
+        switchTab('add');
+        if (mode === 'exp' && $('modeExpBtn')) $('modeExpBtn').click();
+        if (mode === 'inc' && $('modeIncBtn')) $('modeIncBtn').click();
+        Motion.haptic(10);
+        return;
+      }
       const navLink = e.target.closest('[data-tab]');
       if (navLink) {
         e.preventDefault();
