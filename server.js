@@ -4,24 +4,177 @@ const cors = require('cors');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-const { DatabaseSync } = require('node:sqlite');
+const isServerless = Boolean(process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME || process.env.LAMBDA_TASK_ROOT);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Ensure data and uploads directory exist
-const DATA_DIR = path.join(__dirname, 'data');
-const UPLOADS_DIR = path.join(__dirname, 'uploads');
-if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
-if (!fs.existsSync(UPLOADS_DIR)) fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+// Ensure writable data and uploads directory exist
+const DATA_DIR = isServerless ? path.join('/tmp', 'data') : path.join(__dirname, 'data');
+const UPLOADS_DIR = isServerless ? path.join('/tmp', 'uploads') : path.join(__dirname, 'uploads');
 
-// Initialize SQLite Database
-const dbPath = path.join(DATA_DIR, 'trace.db');
-const db = new DatabaseSync(dbPath);
+try {
+  if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
+} catch (e) {
+  console.warn('DATA_DIR creation notice:', e.message);
+}
 
-// Enable WAL mode for better concurrency and performance
-db.exec('PRAGMA journal_mode = WAL;');
-db.exec('PRAGMA foreign_keys = ON;');
+try {
+  if (!fs.existsSync(UPLOADS_DIR)) fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+} catch (e) {
+  console.warn('UPLOADS_DIR creation notice:', e.message);
+}
+
+// In-Memory / File Fallback Storage for serverless or older Node runtimes
+function createMemoryDbFallback() {
+  const jsonPath = path.join(DATA_DIR, 'trace_store.json');
+  let store = { settings: {}, transactions: [], bills: [], chat_history: [] };
+
+  try {
+    if (fs.existsSync(jsonPath)) {
+      store = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
+    }
+  } catch (e) {}
+
+  function persist() {
+    try {
+      fs.writeFileSync(jsonPath, JSON.stringify(store, null, 2));
+    } catch (e) {}
+  }
+
+  let txIdCounter = store.transactions.reduce((max, t) => Math.max(max, t.id || 0), 0);
+  let billIdCounter = store.bills.reduce((max, b) => Math.max(max, b.id || 0), 0);
+  let chatIdCounter = store.chat_history.reduce((max, c) => Math.max(max, c.id || 0), 0);
+
+  return {
+    exec(sql) {
+      if (sql.includes('DELETE FROM transactions')) { store.transactions = []; persist(); }
+      if (sql.includes('DELETE FROM bills')) { store.bills = []; persist(); }
+      if (sql.includes('DELETE FROM chat_history')) { store.chat_history = []; persist(); }
+      return this;
+    },
+    prepare(sql) {
+      const trimmed = sql.trim();
+      return {
+        run(...args) {
+          if (trimmed.startsWith('INSERT INTO settings')) {
+            const [k, v] = args;
+            store.settings[k] = v;
+            persist();
+            return { changes: 1 };
+          }
+          if (trimmed.startsWith('INSERT INTO transactions')) {
+            txIdCounter++;
+            const t = {
+              id: txIdCounter,
+              type: args[0],
+              title: args[1],
+              amount: Number(args[2]),
+              category: args[3],
+              date_offset: Number(args[4]),
+              saved_buffer: Number(args[5] || 0),
+              receipt_image: args[6] || null,
+              notes: args[7] || null,
+              classification: args[8] || 'need',
+              created_at: new Date().toISOString()
+            };
+            store.transactions.unshift(t);
+            persist();
+            return { lastInsertRowid: t.id, changes: 1 };
+          }
+          if (trimmed.startsWith('UPDATE transactions SET classification = ? WHERE id = ?')) {
+            const [cls, id] = args;
+            const t = store.transactions.find(x => x.id === Number(id));
+            if (t) { t.classification = cls; persist(); }
+            return { changes: 1 };
+          }
+          if (trimmed.startsWith('DELETE FROM transactions WHERE id = ?')) {
+            const [id] = args;
+            store.transactions = store.transactions.filter(x => x.id !== Number(id));
+            persist();
+            return { changes: 1 };
+          }
+          if (trimmed.startsWith('INSERT INTO bills')) {
+            billIdCounter++;
+            const b = {
+              id: billIdCounter,
+              name: args[0],
+              amount: Number(args[1]),
+              due_offset: Number(args[2]),
+              paid: 0,
+              paid_at: null,
+              created_at: new Date().toISOString()
+            };
+            store.bills.push(b);
+            persist();
+            return { lastInsertRowid: b.id, changes: 1 };
+          }
+          if (trimmed.startsWith('UPDATE bills SET paid = 1')) {
+            const [id] = args;
+            const b = store.bills.find(x => x.id === Number(id));
+            if (b) { b.paid = 1; b.paid_at = new Date().toISOString(); persist(); }
+            return { changes: 1 };
+          }
+          if (trimmed.startsWith('DELETE FROM bills WHERE id = ?')) {
+            const [id] = args;
+            store.bills = store.bills.filter(x => x.id !== Number(id));
+            persist();
+            return { changes: 1 };
+          }
+          if (trimmed.startsWith('INSERT INTO chat_history')) {
+            chatIdCounter++;
+            const c = { id: chatIdCounter, role: args[0], content: args[1], created_at: new Date().toISOString() };
+            store.chat_history.push(c);
+            persist();
+            return { lastInsertRowid: c.id, changes: 1 };
+          }
+          return { changes: 0 };
+        },
+        get(...args) {
+          if (trimmed.startsWith('SELECT value FROM settings WHERE key = ?')) {
+            const val = store.settings[args[0]];
+            return val !== undefined ? { value: val } : undefined;
+          }
+          if (trimmed.startsWith('SELECT COUNT(*) as count FROM transactions')) {
+            return { count: store.transactions.length };
+          }
+          if (trimmed.startsWith('SELECT * FROM bills WHERE id = ?')) {
+            return store.bills.find(x => x.id === Number(args[0]));
+          }
+          return undefined;
+        },
+        all(...args) {
+          if (trimmed.includes('FROM transactions')) {
+            return [...store.transactions].sort((a, b) => b.date_offset - a.date_offset || b.id - a.id);
+          }
+          if (trimmed.includes('FROM bills')) {
+            return [...store.bills].sort((a, b) => a.due_offset - b.due_offset || a.id - b.id);
+          }
+          if (trimmed.includes('FROM chat_history')) {
+            return [...store.chat_history].slice(-50);
+          }
+          if (trimmed.includes('FROM settings')) {
+            return Object.entries(store.settings).map(([key, value]) => ({ key, value }));
+          }
+          return [];
+        }
+      };
+    }
+  };
+}
+
+// Initialize SQLite Database with safe fallback
+let db;
+try {
+  const { DatabaseSync } = require('node:sqlite');
+  const dbPath = path.join(DATA_DIR, 'trace.db');
+  db = new DatabaseSync(dbPath);
+  db.exec('PRAGMA journal_mode = WAL;');
+  db.exec('PRAGMA foreign_keys = ON;');
+} catch (err) {
+  console.warn('Native node:sqlite unavailable or restricted. Using resilient store fallback:', err.message);
+  db = createMemoryDbFallback();
+}
 
 // Create tables
 db.exec(`
@@ -1127,7 +1280,12 @@ app.use((req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Start listening
-app.listen(PORT, () => {
-  console.log(`TRACE Money Manager backend is running at http://localhost:${PORT}`);
-});
+// Start listening when not in a serverless environment (e.g. Vercel)
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`TRACE Money Manager backend is running at http://localhost:${PORT}`);
+  });
+}
+
+// Export for serverless environments (Vercel, AWS Lambda)
+module.exports = app;
