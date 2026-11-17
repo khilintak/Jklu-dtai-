@@ -1,0 +1,29 @@
+# Environment and Secret Keys
+.env
+.env*.local
+.env.production
+.env.staging
+
+# Dependencies
+node_modules/
+package-lock.json.bak
+
+# SQLite Database & Write-Ahead Logs
+data/
+*.db
+*.db-wal
+*.db-shm
+
+# User Uploaded Receipt Images
+uploads/*
+!uploads/.gitkeep
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+
+# Logs & Debug
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
