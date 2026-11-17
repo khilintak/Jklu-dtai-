@@ -1,648 +1,748 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="description" content="TRACE: Minimalist student money companion. Safe daily spend, emergency buffer, and Needs vs. Wants discipline.">
+  <meta name="description" content="TRACE — Precision Money Manager. Safe daily spend, buffer shield, and budget discipline.">
   <title>TRACE — Precision Money Manager</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-  <div class="app-wrapper" id="appWrapper">
-    <!-- Desktop Left Sidebar -->
-    <aside class="sidebar">
-      <div class="brand-section">
-        <div class="brand-logo">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
-            <polyline points="16 7 22 7 22 13"/>
+  <div class="pc-app-layout">
+    <!-- Desktop Left Navigation Sidebar (Linear / Stripe SaaS Style) -->
+    <aside class="pc-sidebar">
+      <div class="sidebar-header">
+        <div class="brand-logo-wrap">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="4" width="20" height="16" rx="4"/>
+            <line x1="2" y1="10" x2="22" y2="10"/>
           </svg>
         </div>
-        <div class="brand-text">
-          <h1>TRACE</h1>
-          <span class="brand-badge">Money OS</span>
+        <div class="brand-info">
+          <span class="brand-title">TRACE</span>
+          <span class="brand-subtitle">Money Manager</span>
         </div>
       </div>
 
-      <ul class="nav-links">
-        <li class="nav-item">
-          <a href="#overview" data-tab="overview" aria-current="page">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M3 11l9-8 9 8v10H3z"/>
-            </svg>
-            Overview
-          </a>
-        </li>
-        <li class="nav-item">
-          <a href="#add" data-tab="add">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="12" y1="5" x2="12" y2="19"/>
-              <line x1="5" y1="12" x2="19" y2="12"/>
-            </svg>
-            Add Entry
-          </a>
-        </li>
-        <li class="nav-item">
-          <a href="#plan" data-tab="plan">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-              <line x1="16" y1="2" x2="16" y2="6"/>
-              <line x1="8" y1="2" x2="8" y2="6"/>
-              <line x1="3" y1="10" x2="21" y2="10"/>
-            </svg>
-            Budget Plan
-          </a>
-        </li>
-        <li class="nav-item">
-          <a href="#insights" data-tab="insights">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="18" y1="20" x2="18" y2="10"/>
-              <line x1="12" y1="20" x2="12" y2="4"/>
-              <line x1="6" y1="20" x2="6" y2="14"/>
-            </svg>
-            Insights
-          </a>
-        </li>
-        <li class="nav-item">
-          <a href="#ask" data-tab="ask">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-            </svg>
-            AI Guide
-          </a>
-        </li>
-      </ul>
+      <!-- Quick Action CTA -->
+      <div class="sidebar-action-wrap">
+        <button type="button" class="sidebar-quick-btn" data-action-mode="exp">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"/>
+            <line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+          <span>Add Transaction</span>
+        </button>
+      </div>
 
+      <!-- Navigation Links -->
+      <nav class="sidebar-nav">
+        <a href="#overview" class="sidebar-nav-item top-tab" data-tab="overview" aria-current="page">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7" rx="1"/>
+            <rect x="14" y="3" width="7" height="7" rx="1"/>
+            <rect x="14" y="14" width="7" height="7" rx="1"/>
+            <rect x="3" y="14" width="7" height="7" rx="1"/>
+          </svg>
+          <span>Dashboard</span>
+        </a>
+        <a href="#add" class="sidebar-nav-item top-tab" data-tab="add">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="16"/>
+            <line x1="8" y1="12" x2="16" y2="12"/>
+          </svg>
+          <span>New Entry</span>
+        </a>
+        <a href="#plan" class="sidebar-nav-item top-tab" data-tab="plan">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+          </svg>
+          <span>Budget Plan</span>
+        </a>
+        <a href="#insights" class="sidebar-nav-item top-tab" data-tab="insights">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="20" x2="18" y2="10"/>
+            <line x1="12" y1="20" x2="12" y2="4"/>
+            <line x1="6" y1="20" x2="6" y2="14"/>
+          </svg>
+          <span>Analytics</span>
+        </a>
+        <a href="#ask" class="sidebar-nav-item top-tab" data-tab="ask">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
+          <span>AI Advisor</span>
+        </a>
+      </nav>
+
+      <!-- Sidebar Footer (Theme, Settings) -->
       <div class="sidebar-footer">
-        <div class="pulse-card">
-          <div class="pulse-status">
-            <span class="pulse-dot"></span>
-            <span id="sidebarPulseText">Safe: ₹0/day</span>
-          </div>
-          <span style="font-size: 11px; font-weight: 700; color: var(--brand-mint);">ACTIVE</span>
+        <div class="sidebar-footer-row">
+          <button type="button" class="sidebar-footer-btn" id="themeToggleBtn" data-action="toggle-theme" title="Toggle Theme">
+            <span class="theme-btn-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="5"/>
+                <line x1="12" y1="1" x2="12" y2="3"/>
+                <line x1="12" y1="21" x2="12" y2="23"/>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                <line x1="1" y1="12" x2="3" y2="12"/>
+                <line x1="21" y1="12" x2="23" y2="12"/>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+              </svg>
+            </span>
+            <span class="theme-btn-label">Theme</span>
+          </button>
+
+          <button type="button" class="sidebar-footer-btn" id="apiKeySettingsBtn" title="API Credentials">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            </svg>
+            <span>Settings</span>
+          </button>
         </div>
       </div>
     </aside>
 
-    <!-- Main Content Canvas -->
-    <div class="main-wrapper">
-      <!-- Top Navigation Header -->
-      <header class="top-nav">
-        <div class="top-left">
-          <div class="mobile-brand-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
-              <polyline points="16 7 22 7 22 13"/>
-            </svg>
-            <span>TRACE</span>
-          </div>
-          <span class="top-date" id="headerDate">Today</span>
+    <!-- Main Content Workspace Area -->
+    <div class="pc-main-viewport">
+      <!-- Top Bar (Desktop Breadcrumbs, Date & Quick Actions) -->
+      <header class="pc-topbar">
+        <div class="topbar-left">
+          <h1 class="page-heading" id="pageHeading">Dashboard</h1>
         </div>
-
-        <div class="top-actions">
-          <div class="view-mode-pill" title="Toggle Desktop vs Mobile View">
-            <button type="button" class="view-mode-btn active" data-mode="dashboard">Desktop</button>
-            <button type="button" class="view-mode-btn" data-mode="mobile">Mobile View</button>
+        <div class="topbar-right">
+          <span class="topbar-date" id="headerDate">Today</span>
+          <button type="button" class="topbar-icon-btn" id="topbarThemeBtn" data-action="toggle-theme" title="Toggle Theme" aria-label="Toggle Theme">
+            <span class="theme-btn-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="5"/>
+                <line x1="12" y1="1" x2="12" y2="3"/>
+                <line x1="12" y1="21" x2="12" y2="23"/>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                <line x1="1" y1="12" x2="3" y2="12"/>
+                <line x1="21" y1="12" x2="23" y2="12"/>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+              </svg>
+            </span>
+          </button>
+          <div class="topbar-actions">
+            <button type="button" class="btn-topbar-action primary" data-action-mode="exp">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <span>+ Expense</span>
+            </button>
+            <button type="button" class="btn-topbar-action secondary" data-action-mode="inc">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+              <span>+ Income</span>
+            </button>
           </div>
-
-          <button type="button" class="action-btn" id="apiKeySettingsBtn" aria-label="AI API Key Settings" title="Configure AI Key">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/>
-            </svg>
-          </button>
-
-          <button type="button" class="action-btn" id="themeToggleBtn" aria-label="Toggle Theme" title="Toggle Dark/Light Mode">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="5"/>
-              <line x1="12" y1="1" x2="12" y2="3"/>
-              <line x1="12" y1="21" x2="12" y2="23"/>
-              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
-              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-              <line x1="1" y1="12" x2="3" y2="12"/>
-              <line x1="21" y1="12" x2="23" y2="12"/>
-              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
-              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-            </svg>
-          </button>
         </div>
       </header>
 
-      <!-- Main Canvas Container -->
-      <main class="content-container">
+      <!-- Content Workspace -->
+      <main class="pc-workspace-body">
 
         <!-- ==========================================
-             VIEW 1: OVERVIEW (Minimal Apple Wallet / Cash App Style)
+             VIEW 1: OVERVIEW / DASHBOARD (PC Layout)
              ========================================== -->
         <section class="view-section" id="view-overview">
-          <!-- Calm Focal Hero -->
-          <div class="hero-focal-canvas">
-            <div class="hero-amount-display">
-              <span class="hero-currency">₹</span>
-              <span class="hero-amount" id="heroSafeAmount">0</span>
-            </div>
-            <div class="hero-subtitle">Safe to spend today</div>
-
-            <!-- Two Fast Action Pills -->
-            <div class="hero-action-pills">
-              <button type="button" class="btn-action-pill primary" data-action-mode="exp">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                  <line x1="12" y1="5" x2="12" y2="19"/>
-                  <line x1="5" y1="12" x2="19" y2="12"/>
-                </svg>
-                <span>Add Expense</span>
-              </button>
-              <button type="button" class="btn-action-pill secondary" data-action-mode="inc">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                  <polyline points="18 15 12 9 6 15"/>
-                </svg>
-                <span>Add Income</span>
-              </button>
+          <!-- 4-Card Desktop KPI Banner -->
+          <div class="kpi-banner-grid">
+            <!-- Focal Card: Safe Spend Today -->
+            <div class="card kpi-banner-card focal">
+              <div class="kpi-header">
+                <span class="kpi-label">Safe to spend today</span>
+                <span class="status-badge ok" id="heroStatusPill">
+                  <span id="heroPeriodDesc">Ready to track.</span>
+                </span>
+              </div>
+              <div class="kpi-amount-row">
+                <span class="kpi-currency">₹</span>
+                <span class="kpi-amount" id="heroSafeAmount">0</span>
+              </div>
+              <span class="kpi-caption">Daily spending allowance for horizon</span>
             </div>
 
-            <!-- Subtle 1-line Financial Summary (No heavy borders) -->
-            <div class="hero-metrics-strip">
-              <div class="metric-chip">
-                <span>Balance</span>
-                <b id="heroBalance">₹0</b>
+            <!-- Card 2: Total Balance -->
+            <div class="card kpi-banner-card">
+              <div class="kpi-header">
+                <span class="kpi-label">Total Liquid Cash</span>
+                <div class="kpi-icon">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="4"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+                </div>
               </div>
-              <span class="metric-divider">·</span>
-              <div class="metric-chip">
-                <span>Buffer</span>
-                <b id="heroBuffer">₹0</b>
+              <div class="kpi-amount-row">
+                <span class="kpi-amount secondary" id="heroBalance">₹0</span>
               </div>
-              <span class="metric-divider">·</span>
-              <div class="metric-chip">
-                <span>Bills</span>
-                <b id="heroBillsDue">₹0</b>
-              </div>
+              <span class="kpi-caption">Available liquid funds</span>
             </div>
 
-            <!-- Calm Status Line -->
-            <div class="hero-status-line">
-              <span class="status-pill ok" id="heroStatusPill">
-                <span class="pulse-dot"></span>
-                <span id="heroPeriodDesc">Ready to track.</span>
-              </span>
+            <!-- Card 3: Buffer Cushion -->
+            <div class="card kpi-banner-card">
+              <div class="kpi-header">
+                <span class="kpi-label">Safety Buffer</span>
+                <div class="kpi-icon">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                </div>
+              </div>
+              <div class="kpi-amount-row">
+                <span class="kpi-amount secondary" id="heroBuffer">₹0</span>
+              </div>
+              <span class="kpi-caption">Shielded emergency reserve</span>
+            </div>
+
+            <!-- Card 4: Bills Due -->
+            <div class="card kpi-banner-card">
+              <div class="kpi-header">
+                <span class="kpi-label">Upcoming Bills</span>
+                <div class="kpi-icon">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                </div>
+              </div>
+              <div class="kpi-amount-row">
+                <span class="kpi-amount secondary" id="heroBillsDue">₹0</span>
+              </div>
+              <span class="kpi-caption">Fixed commitments in window</span>
             </div>
           </div>
 
-          <!-- Sleek 1-Line Needs vs. Wants Ratio Stripe -->
-          <div class="needs-wants-strip" id="needsWantsCard">
-            <div class="ratio-header">
-              <div class="ratio-side need">
-                <span class="ratio-dot need"></span>
-                <span class="ratio-title">Needs</span>
-                <b id="compNeedPct">0%</b>
-                <span class="ratio-amt" id="compNeedAmount">₹0</span>
-              </div>
-              <span class="status-pill ok" id="compStatusBadge">Balanced</span>
-              <div class="ratio-side want">
-                <span class="ratio-amt" id="compWantAmount">₹0</span>
-                <b id="compWantPct">0%</b>
-                <span class="ratio-title">Wants</span>
-                <span class="ratio-dot want"></span>
-              </div>
-            </div>
+          <!-- 2-Column Desktop Grid (Clean Dashboard) -->
+          <div class="dashboard-columns-grid">
+            <!-- Left Main Column (68%) -->
+            <div class="dashboard-col-main">
+              <!-- Transactions Ledger -->
+              <div class="card">
+                <div class="card-header">
+                  <div class="card-title-group">
+                    <h2 class="card-title">Recent Transactions</h2>
+                    <span class="card-subtitle"><span id="txCountBadge">0</span> entries recorded in ledger</span>
+                  </div>
 
-            <!-- Unified Horizontal Spectrum Bar -->
-            <div class="ratio-bar">
-              <div class="ratio-fill need" id="compMeterNeed" style="width: 50%;"></div>
-              <div class="ratio-fill want" id="compMeterWant" style="width: 50%;"></div>
-            </div>
+                  <!-- Segmented Filter Control -->
+                  <div class="segmented-control" id="txFilterBar">
+                    <button type="button" class="segment-btn active" data-tx-filter="all">All</button>
+                    <button type="button" class="segment-btn" data-tx-filter="need">Needs (<span id="filterNeedCount">0</span>)</button>
+                    <button type="button" class="segment-btn" data-tx-filter="want">Wants (<span id="filterWantCount">0</span>)</button>
+                  </div>
+                </div>
 
-            <!-- Subtle 1-Line Context Hint -->
-            <div class="ratio-hint-line" id="compAdviceBanner">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"/>
-                <line x1="12" y1="16" x2="12" y2="12"/>
-                <line x1="12" y1="8" x2="12.01" y2="8"/>
-              </svg>
-              <span id="compAdviceText">Tag expenses as Need or Want to see your balance.</span>
-            </div>
+                <!-- Empty State -->
+                <div class="empty-state" id="txEmptyState">
+                  <div class="empty-state-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="2" y="4" width="20" height="16" rx="4"/>
+                      <line x1="2" y1="10" x2="22" y2="10"/>
+                    </svg>
+                  </div>
+                  <p class="empty-state-title">No transactions recorded yet</p>
+                  <p class="empty-state-sub">Log an expense or income entry using the buttons above to begin tracking.</p>
+                  <button type="button" class="btn-topbar-action primary" data-action-mode="exp" style="margin-top: 14px;">+ Record First Entry</button>
+                </div>
 
-            <div id="compNeedCount" hidden></div>
-            <div id="compWantCount" hidden></div>
-          </div>
+                <!-- Transaction List -->
+                <ul class="tx-list" id="recentTxList"></ul>
 
-          <!-- Activity Stream (Transactions) -->
-          <div class="activity-section">
-            <div class="activity-header">
-              <h3>Activity</h3>
-              <div class="tx-filter-bar" id="txFilterBar">
-                <button type="button" class="tx-filter-pill active" data-tx-filter="all">All</button>
-                <button type="button" class="tx-filter-pill" data-tx-filter="need">Needs (<span id="filterNeedCount">0</span>)</button>
-                <button type="button" class="tx-filter-pill" data-tx-filter="want">Wants (<span id="filterWantCount">0</span>)</button>
+                <!-- Hidden Compatibility IDs -->
+                <div id="txTotalSpend" hidden></div>
+                <div id="txList" hidden></div>
               </div>
             </div>
 
-            <ul class="list-group" id="recentTxList"></ul>
+            <!-- Right Rail (32%) -->
+            <div class="dashboard-col-side">
+              <!-- Cashflow Summary Widget -->
+              <div class="card side-widget-card">
+                <div class="card-header">
+                  <div class="card-title-group">
+                    <h3 class="card-title">Cashflow Summary</h3>
+                    <span class="card-subtitle">Current cycle totals</span>
+                  </div>
+                </div>
+
+                <div class="cashflow-summary-list">
+                  <div class="cashflow-item">
+                    <span class="cashflow-label">Recorded Income</span>
+                    <span class="cashflow-val income" id="dashIncome">₹0</span>
+                  </div>
+                  <div class="cashflow-item">
+                    <span class="cashflow-label">Total Expenses</span>
+                    <span class="cashflow-val expense" id="dashExpenses">₹0</span>
+                  </div>
+                  <div class="cashflow-item total">
+                    <span class="cashflow-label">Net Balance</span>
+                    <span class="cashflow-val" id="dashNetSavings">₹0</span>
+                  </div>
+                </div>
+
+                <div class="card-action-row">
+                  <a href="#insights" data-tab="insights" class="card-inline-link">
+                    <span>View Spending Analytics</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                  </a>
+                </div>
+              </div>
+
+              <!-- Upcoming Fixed Bills Widget -->
+              <div class="card side-widget-card">
+                <div class="card-header">
+                  <div class="card-title-group">
+                    <h3 class="card-title">Upcoming Bills</h3>
+                    <span class="card-subtitle">Scheduled obligations</span>
+                  </div>
+                </div>
+
+                <ul class="upcoming-bills-mini" id="upcomingBillsList">
+                  <li class="empty-state-mini">No pending bills right now. All clear.</li>
+                </ul>
+
+                <div class="card-action-row">
+                  <a href="#plan" data-tab="plan" class="card-inline-link">
+                    <span>Manage Bills & Buffer</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                  </a>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
         <!-- ==========================================
-             VIEW 2: ADD TRANSACTION
+             VIEW 2: ADD ENTRY
              ========================================== -->
         <section class="view-section" id="view-add" hidden>
-          <div class="card form-card">
-            <!-- Expense vs Income Switcher -->
-            <div class="segmented-control">
-              <button type="button" id="modeExpBtn" aria-pressed="true">Expense</button>
-              <button type="button" id="modeIncBtn" aria-pressed="false">Income / Allowance</button>
-            </div>
+          <div class="form-container-centered">
+            <div class="card form-card">
+              <div class="card-header">
+                <div class="card-title-group">
+                  <h2 class="card-title">Record New Entry</h2>
+                  <span class="card-subtitle">Log cash inflow or expense into your ledger</span>
+                </div>
+              </div>
 
-            <!-- Hero Amount Input -->
-            <div class="amount-hero-input">
-              <span class="amount-hero-currency">₹</span>
-              <input type="text" id="addAmountInput" inputmode="decimal" placeholder="0" autocomplete="off" aria-label="Amount in rupees">
-            </div>
+              <!-- Expense vs Income Switch -->
+              <div class="type-switch">
+                <button type="button" class="type-btn active expense" id="modeExpBtn">Expense</button>
+                <button type="button" class="type-btn income" id="modeIncBtn">Income</button>
+              </div>
 
-            <!-- Title Input -->
-            <label for="addTitleInput" class="field-label">Description</label>
-            <input type="text" id="addTitleInput" class="form-input" placeholder="e.g. Canteen lunch" autocomplete="off">
+              <!-- Amount Input -->
+              <div class="form-group amount-group">
+                <label for="txAmountInput" class="form-label">Amount</label>
+                <div class="amount-field">
+                  <span class="amount-prefix">₹</span>
+                  <input type="text" id="txAmountInput" class="amount-input" inputmode="decimal" placeholder="0" autocomplete="off">
+                </div>
+              </div>
 
-            <!-- Category Chips -->
-            <label class="field-label">Category</label>
-            <div class="chip-group" id="categoryChips"></div>
+              <!-- Note / Merchant -->
+              <div class="form-group">
+                <label for="txNoteInput" class="form-label">Merchant or Note</label>
+                <input type="text" id="txNoteInput" class="form-input" placeholder="e.g. Campus Cafeteria, Grocery, Books" autocomplete="off">
+              </div>
 
-            <!-- Classification: You Want vs You Need -->
-            <div id="addIntentBox">
-              <label class="field-label">Intent</label>
-              <div class="intent-selector">
-                <button type="button" class="intent-btn active" data-intent="need" id="intentNeedBtn">
-                  <div class="intent-icon-badge">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <!-- Category Selection -->
+              <div class="form-group">
+                <label for="txCategorySelect" class="form-label">Category</label>
+                <select id="txCategorySelect" class="form-input">
+                  <option value="Food & Dining">Food & Dining</option>
+                  <option value="Groceries">Groceries</option>
+                  <option value="Transport & Fuel">Transport & Fuel</option>
+                  <option value="Books & College">Books & College</option>
+                  <option value="Bills & Utilities">Bills & Utilities</option>
+                  <option value="Entertainment">Entertainment</option>
+                  <option value="Shopping & Gadgets">Shopping & Gadgets</option>
+                  <option value="Health & Medical">Health & Medical</option>
+                  <option value="Custom">Other (Custom)</option>
+                </select>
+                <input type="text" id="customCategoryInput" class="form-input" placeholder="Enter custom category" style="display: none; margin-top: 8px;">
+              </div>
+
+              <!-- Need vs Want Classification -->
+              <div class="form-group" id="needWantToggleGroup">
+                <label class="form-label">Budget Classification</label>
+                <div class="classification-switch">
+                  <button type="button" class="class-btn active need" id="optNeed">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                       <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                      <path d="m9 12 2 2 4-4"/>
                     </svg>
-                  </div>
-                  <div class="intent-labels">
-                    <b>You Need</b>
-                    <small>Essential living cost</small>
-                  </div>
-                </button>
-                <button type="button" class="intent-btn" data-intent="want" id="intentWantBtn">
-                  <div class="intent-icon-badge">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                    <span>Need (Essential)</span>
+                  </button>
+                  <button type="button" class="class-btn want" id="optWant">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="10"/>
+                      <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/>
+                      <path d="M2 12h20"/>
                     </svg>
-                  </div>
-                  <div class="intent-labels">
-                    <b>You Want</b>
-                    <small>Discretionary treat</small>
-                  </div>
-                </button>
+                    <span>Want (Discretionary)</span>
+                  </button>
+                </div>
               </div>
-            </div>
 
-            <!-- Student Presets Shortcuts -->
-            <div class="student-presets" id="studentPresetsBox">
-              <span class="presets-label">Campus Shortcuts</span>
-              <div class="chip-group" style="margin-bottom: 0;">
-                <button type="button" class="chip" data-preset-amt="20" data-preset-title="Campus Chai & Biscuit" data-preset-cat="Food">Chai ₹20</button>
-                <button type="button" class="chip" data-preset-amt="120" data-preset-title="Canteen Lunch Plate" data-preset-cat="Food">Canteen ₹120</button>
-                <button type="button" class="chip" data-preset-amt="60" data-preset-title="Shared Auto to Gate" data-preset-cat="Transport">Auto ₹60</button>
-                <button type="button" class="chip" data-preset-amt="40" data-preset-title="Metro Smart Card" data-preset-cat="Transport">Metro ₹40</button>
-                <button type="button" class="chip" data-preset-amt="30" data-preset-title="Lab Report Printouts" data-preset-cat="Study">Printout ₹30</button>
-                <button type="button" class="chip" data-preset-amt="299" data-preset-title="5G Mobile Recharge" data-preset-cat="Bills">Recharge ₹299</button>
-              </div>
-            </div>
-
-            <!-- Date Selection -->
-            <label class="field-label">Date</label>
-            <div class="chip-group" id="dateChips"></div>
-
-            <!-- Dynamic Impact Preview -->
-            <div class="impact-preview">
-              <div class="impact-preview-icon">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="12" r="10"/>
-                  <line x1="12" y1="16" x2="12" y2="12"/>
-                  <line x1="12" y1="8" x2="12.01" y2="8"/>
-                </svg>
-              </div>
-              <div class="impact-preview-text" id="impactPreviewText">
-                Safe-to-spend updates dynamically.
-              </div>
-            </div>
-
-            <!-- Receipt Scanner Dropzone -->
-            <div class="scanner-dropzone" id="scannerDropzone">
-              <div class="scanner-laser"></div>
-              <div class="scanner-icon">
+              <!-- Optional Receipt Upload -->
+              <div class="scanner-dropzone">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-                  <circle cx="12" cy="13" r="4"/>
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                  <circle cx="8.5" cy="8.5" r="1.5"/>
+                  <polyline points="21 15 16 10 5 21"/>
                 </svg>
+                <div class="scanner-text">
+                  <span class="scanner-title">Scan Receipt Image</span>
+                  <span class="scanner-hint" id="scannerHint">Auto-extract merchant, total, and items</span>
+                </div>
+                <input type="file" id="billFileInput" accept="image/*" class="file-input-hidden">
               </div>
-              <b style="font-size: 14px; color: var(--ink-primary); display: block;">Scan Receipt Photo</b>
-              <small style="color: var(--ink-tertiary); margin-top: 3px; display: block;" id="scannerHint">Tap to upload bill image for Gemini Vision OCR.</small>
-              <input type="file" id="billFileInput" accept="image/*">
-            </div>
 
-            <!-- Submit CTA -->
-            <button type="button" class="btn-primary" id="saveTxBtn">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
-                <polyline points="17 21 17 13 7 13 7 21"/>
-                <polyline points="7 3 7 8 15 8"/>
-              </svg>
-              <span>Record Entry</span>
-            </button>
+              <!-- Submit CTA -->
+              <button type="button" class="btn-primary" id="saveTxBtn">Record Entry</button>
+            </div>
           </div>
         </section>
 
         <!-- ==========================================
-             VIEW 3: BUDGET PLAN & SETTINGS
+             VIEW 3: BUDGET PLAN & SETTINGS (2-Column PC Grid)
              ========================================== -->
         <section class="view-section" id="view-plan" hidden>
-          <!-- Next Expected Inflow Horizon -->
-          <div class="card">
-            <div class="card-title-group">
-              <h3>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                  <line x1="16" y1="2" x2="16" y2="6"/>
-                  <line x1="8" y1="2" x2="8" y2="6"/>
-                  <line x1="3" y1="10" x2="21" y2="10"/>
-                </svg>
-                Next Inflow Horizon
-              </h3>
-            </div>
-            <p class="card-subtitle">Safe spend spreads evenly until your next expected money arrival.</p>
-            <div style="display: flex; gap: 10px; margin-top: 14px;">
-              <input type="text" id="planNextDaysInput" class="form-input" inputmode="numeric" placeholder="Days to next money (e.g. 10)">
-              <button type="button" class="btn-primary" id="setNextMoneyBtn" style="margin-top: 0; width: auto; padding: 12px 20px;">Set Date</button>
-              <button type="button" class="btn-secondary" id="clearNextMoneyBtn">30-day Window</button>
-            </div>
-            <p class="card-subtitle" style="margin-top: 10px; font-weight: 600;" id="planNextDaysHint"></p>
-          </div>
+          <div class="plan-desktop-grid">
+            <!-- Left Column: Horizon & Buffer -->
+            <div class="plan-desktop-col">
+              <!-- Next Expected Inflow Horizon -->
+              <div class="card">
+                <div class="card-header">
+                  <div class="card-title-group">
+                    <h2 class="card-title">Next Inflow Horizon</h2>
+                    <span class="card-subtitle">Spread your daily budget evenly until the next arrival</span>
+                  </div>
+                </div>
 
-          <!-- Emergency Cushion Card -->
-          <div class="card">
-            <div class="card-title-group">
-              <h3>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                </svg>
-                Safety Buffer Cushion
-              </h3>
-            </div>
-            <p class="card-subtitle">Automatically shielded from each incoming cash deposit.</p>
-            
-            <div class="progress-track" style="height: 10px; margin-top: 16px;">
-              <div class="progress-fill" id="planBufferFill" style="background: var(--brand-mint); width: 0%;"></div>
-            </div>
-            <p class="card-subtitle" style="margin-top: 10px; font-weight: 600;" id="planBufferHint"></p>
-
-            <div style="margin-top: 20px;">
-              <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 13px;">
-                <span>Auto-save to buffer:</span>
-                <span id="planBufferRangeVal" style="color: var(--brand-mint); font-family: var(--font-mono);">20%</span>
+                <div class="inline-input-row">
+                  <input type="text" id="planNextDaysInput" class="form-input" inputmode="numeric" placeholder="Days to next money (e.g. 10)">
+                  <button type="button" class="btn-secondary" id="setNextMoneyBtn">Set Date</button>
+                  <button type="button" class="btn-ghost" id="clearNextMoneyBtn">30-day Window</button>
+                </div>
+                <p class="plan-hint-text" id="planNextDaysHint"></p>
               </div>
-              <input type="range" id="planBufferRange" min="0" max="50" step="5" value="20" style="width: 100%; margin-top: 8px; accent-color: var(--brand-mint);">
-            </div>
 
-            <div style="margin-top: 18px;">
-              <label for="planBufferGoalInput" class="field-label">Target Buffer Goal (₹)</label>
-              <div style="display: flex; gap: 10px;">
-                <input type="text" id="planBufferGoalInput" class="form-input" inputmode="numeric" placeholder="3000">
-                <button type="button" class="btn-primary" id="setBufferGoalBtn" style="margin-top: 0; width: auto; padding: 12px 20px;">Update Target</button>
+              <!-- Emergency Cushion Card -->
+              <div class="card">
+                <div class="card-header">
+                  <div class="card-title-group">
+                    <h2 class="card-title">Safety Buffer Cushion</h2>
+                    <span class="card-subtitle">Shielded from incoming deposits for emergencies</span>
+                  </div>
+                </div>
+                
+                <div class="progress-track">
+                  <div class="progress-fill" id="planBufferFill" style="width: 0%;"></div>
+                </div>
+                <p class="plan-hint-text" id="planBufferHint"></p>
+
+                <div class="slider-group">
+                  <div class="slider-header">
+                    <span>Auto-save to buffer:</span>
+                    <span class="slider-value" id="planBufferRangeVal">20%</span>
+                  </div>
+                  <input type="range" id="planBufferRange" min="0" max="50" step="5" value="20" class="range-slider">
+                </div>
+
+                <div class="form-group" style="margin-top: 18px;">
+                  <label for="planBufferGoalInput" class="form-label">Target Buffer Goal (₹)</label>
+                  <div class="inline-input-row">
+                    <input type="text" id="planBufferGoalInput" class="form-input" inputmode="numeric" placeholder="3000">
+                    <button type="button" class="btn-secondary" id="setBufferGoalBtn">Update Target</button>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
 
-          <!-- Upcoming Scheduled Bills -->
-          <div class="card">
-            <div class="card-title-group">
-              <h3>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                  <polyline points="14 2 14 8 20 8"/>
-                </svg>
-                Scheduled Bills
-              </h3>
-            </div>
-            <ul class="list-group" id="planBillsList" style="margin-bottom: 18px;"></ul>
-            <ul class="list-group" id="upcomingBillsList" hidden></ul>
+            <!-- Right Column: Scheduled Bills -->
+            <div class="plan-desktop-col">
+              <div class="card">
+                <div class="card-header">
+                  <div class="card-title-group">
+                    <h2 class="card-title">Upcoming Fixed Bills</h2>
+                    <span class="card-subtitle">Committed obligations deducted before safe spend</span>
+                  </div>
+                </div>
 
-            <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 8px;">
-              <input type="text" id="newBillName" class="form-input" placeholder="Bill title (e.g. Mess fees)">
-              <input type="text" id="newBillAmount" class="form-input" inputmode="decimal" placeholder="₹ Amount">
-              <input type="text" id="newBillDays" class="form-input" inputmode="numeric" placeholder="Due (days)">
-            </div>
-            <button type="button" class="btn-primary" id="addBillBtn" style="margin-top: 12px;">
-              + Add Bill
-            </button>
-          </div>
+                <div class="bill-list" id="billList"></div>
 
-          <!-- Data Management -->
-          <div class="card">
-            <div class="card-title-group">
-              <h3>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <ellipse cx="12" cy="5" rx="9" ry="3"/>
-                  <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/>
-                  <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
-                </svg>
-                Data Management
-              </h3>
-            </div>
-            <p class="card-subtitle">Stored securely in your database. Export backups or reset anytime.</p>
-            <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px;">
-              <button type="button" class="btn-secondary" data-act="load-sample">Load Student Sample</button>
-              <button type="button" class="btn-secondary" data-act="export-data">Export Backup (JSON)</button>
-              <button type="button" class="btn-secondary" style="color: var(--color-bad);" data-act="clear-all">Clear All Data</button>
+                <div class="bill-add-box">
+                  <span class="form-label" style="margin-bottom: 8px; display: block;">Schedule a Bill</span>
+                  <div class="bill-input-grid">
+                    <input type="text" id="billNameInput" class="form-input" placeholder="Bill description (e.g. Wi-Fi)">
+                    <input type="text" id="billAmountInput" class="form-input" inputmode="decimal" placeholder="Amount (₹)">
+                    <input type="text" id="billDueDateInput" class="form-input" inputmode="numeric" placeholder="Due in (days)">
+                  </div>
+                  <button type="button" class="btn-secondary" id="addBillBtn" style="margin-top: 10px; width: 100%;">Add Bill</button>
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
         <!-- ==========================================
-             VIEW 4: INSIGHTS & ANALYTICS (Where Deep Math Belongs)
+             VIEW 4: INSIGHTS & ANALYTICS (PC Grid)
              ========================================== -->
         <section class="view-section" id="view-insights" hidden>
-          <!-- Financial Metrics Grid -->
+          <!-- 6-Metric Stat Grid -->
           <div class="stats-grid">
             <div class="card stat-card">
-              <small>Cash Runway</small>
+              <span class="stat-label">Cash Runway</span>
               <div class="stat-value" id="statRunway">--</div>
-              <p class="stat-sub">at recent burn rate</p>
+              <span class="stat-desc">at current burn rate</span>
             </div>
             <div class="card stat-card">
-              <small>Next Inflow</small>
+              <span class="stat-label">Next Inflow</span>
               <div class="stat-value" id="statNextMoney">--</div>
-              <p class="stat-sub">scheduled arrival</p>
+              <span class="stat-desc">scheduled arrival</span>
             </div>
             <div class="card stat-card">
-              <small>Daily Burn Rate</small>
+              <span class="stat-label">Daily Burn Rate</span>
               <div class="stat-value" id="statDailyBurn">--</div>
-              <p class="stat-sub">14-day average</p>
+              <span class="stat-desc">14-day average</span>
             </div>
             <div class="card stat-card">
-              <small>Free Working Cash</small>
+              <span class="stat-label">Free Usable Cash</span>
               <div class="stat-value" id="statUsable">--</div>
-              <p class="stat-sub">after buffer & bills</p>
+              <span class="stat-desc">after buffer & bills</span>
             </div>
             <div class="card stat-card">
-              <small>Total Inflow</small>
-              <div class="stat-value" id="insMoneyIn" style="color: var(--brand-mint);">₹0</div>
-              <p class="stat-sub">all recorded income</p>
+              <span class="stat-label">Total Income</span>
+              <div class="stat-value income" id="insMoneyIn">₹0</div>
+              <span class="stat-desc">all recorded inflows</span>
             </div>
             <div class="card stat-card">
-              <small>Total Outflow</small>
-              <div class="stat-value" id="insMoneyOut">₹0</div>
-              <p class="stat-sub">all recorded expenses</p>
+              <span class="stat-label">Total Outflow</span>
+              <div class="stat-value expense" id="insMoneyOut">₹0</div>
+              <span class="stat-desc">all recorded expenses</span>
             </div>
           </div>
 
-          <!-- 7-Day Velocity Chart -->
-          <div class="card chart-card">
-            <div class="card-title-group">
-              <h3>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <line x1="12" y1="20" x2="12" y2="10"/>
-                  <line x1="18" y1="20" x2="18" y2="4"/>
-                  <line x1="6" y1="20" x2="6" y2="16"/>
-                </svg>
-                7-Day Spending Velocity
-              </h3>
-              <span class="card-subtitle">Daily spend activity</span>
+          <!-- 2 Charts Side-by-Side on PC -->
+          <div class="charts-row">
+            <div class="card chart-col">
+              <div class="card-header">
+                <div class="card-title-group">
+                  <h2 class="card-title">7-Day Spending Velocity</h2>
+                  <span class="card-subtitle">Daily spend activity over the past week</span>
+                </div>
+              </div>
+              <div class="velocity-chart" id="chartBars"></div>
             </div>
-            <div class="chart-bars-container" id="chartBars"></div>
-          </div>
 
-          <!-- Category Expenditure Breakdown -->
-          <div class="card">
-            <div class="card-title-group">
-              <h3>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M21.21 15.89A10 10 0 1 1 8 2.83"/>
-                  <path d="M22 12A10 10 0 0 0 12 2v10z"/>
-                </svg>
-                Category Expenditure Breakdown
-              </h3>
+            <div class="card chart-col">
+              <div class="card-header">
+                <div class="card-title-group">
+                  <h2 class="card-title">Category Breakdown</h2>
+                  <span class="card-subtitle">Spending distribution across categories</span>
+                </div>
+              </div>
+              <div class="category-bars" id="insCategoryBars"></div>
             </div>
-            <div class="category-bars" id="insCategoryBars"></div>
           </div>
 
           <!-- Needs vs Wants In-Depth Analytics -->
-          <div class="card comparison-card">
-            <div class="card-title-group">
-              <h3>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-want);">
-                  <circle cx="12" cy="12" r="10"/>
-                  <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/>
-                  <path d="M2 12h20"/>
-                </svg>
-                <span>50/30/20 Rule: Needs vs. Wants Breakdown</span>
-              </h3>
-              <span class="card-subtitle">Financial equilibrium tracker</span>
-            </div>
-            <div class="split-meter-wrapper">
-              <div class="split-meter-header">
-                <span class="label-need">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                  </svg>
-                  <span>You Need</span>
-                  <b id="insCompNeedPct" style="margin-left: 4px; font-family: var(--font-mono);">0%</b>
-                </span>
-                <span class="label-want">
-                  <b id="insCompWantPct" style="margin-right: 4px; font-family: var(--font-mono);">0%</b>
-                  <span>You Want</span>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-                  </svg>
-                </span>
-              </div>
-              <div class="split-meter-bar">
-                <div class="split-bar-fill-need" id="insCompMeterNeed" style="width: 50%;"></div>
-                <div class="split-bar-fill-want" id="insCompMeterWant" style="width: 50%;"></div>
-              </div>
-            </div>
-            <div class="comparison-grid">
-              <div class="comparison-box needs">
-                <small>Essentials (Needs)</small>
-                <div class="comp-value" id="insCompNeedAmount" style="color: var(--color-need);">₹0</div>
-                <div class="comp-meta">Critical living expenses</div>
-              </div>
-              <div class="comparison-box wants">
-                <small>Discretionary (Wants)</small>
-                <div class="comp-value" id="insCompWantAmount" style="color: var(--color-want);">₹0</div>
-                <div class="comp-meta">Leisure & lifestyle</div>
-              </div>
-            </div>
-            <div class="comparison-advice-banner" id="insCompAdviceBanner" style="margin-top: 14px;">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 1px;">
-                <circle cx="12" cy="12" r="10"/>
-                <line x1="12" y1="16" x2="12" y2="12"/>
-                <line x1="12" y1="8" x2="12.01" y2="8"/>
-              </svg>
-              <div id="insCompAdviceText">Analyzing…</div>
-            </div>
-          </div>
-
-          <!-- Cash Arrival Frequency -->
           <div class="card">
-            <div class="card-title-group">
-              <h3>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
-                </svg>
-                Cash Inflow Patterns
-              </h3>
+            <div class="card-header">
+              <div class="card-title-group">
+                <h2 class="card-title">Needs vs. Wants Equilibrium</h2>
+                <span class="card-subtitle">50/30/20 target distribution</span>
+              </div>
             </div>
-            <p class="card-subtitle" id="insIncomePatternText">Add income entries to analyze frequency and intervals.</p>
+
+            <div class="split-meter-bar" style="margin-top: 10px;">
+              <div class="split-meter-segment need" id="insCompMeterNeed" style="width: 50%;"></div>
+              <div class="split-meter-segment want" id="insCompMeterWant" style="width: 50%;"></div>
+            </div>
+
+            <div class="split-legend" style="margin-top: 14px;">
+              <div class="legend-item">
+                <span class="legend-dot need"></span>
+                <span class="legend-name">Needs</span>
+                <span class="legend-pct" id="insCompNeedPct">0%</span>
+                <span class="legend-amt" id="insCompNeedAmt">₹0</span>
+              </div>
+              <div class="legend-item">
+                <span class="legend-dot want"></span>
+                <span class="legend-name">Wants</span>
+                <span class="legend-pct" id="insCompWantPct">0%</span>
+                <span class="legend-amt" id="insCompWantAmt">₹0</span>
+              </div>
+            </div>
+
+            <p class="plan-hint-text" id="insComparisonAdvice" style="margin-top: 12px;"></p>
           </div>
         </section>
 
         <!-- ==========================================
-             VIEW 5: ASK AI FINANCIAL GUIDE
+             VIEW 5: FINANCIAL ASSISTANT & ADVISOR
              ========================================== -->
         <section class="view-section" id="view-ask" hidden>
-          <div class="chat-container">
-            <div class="chat-messages" id="chatMessages"></div>
+          <div class="advisor-desktop-grid">
+            <!-- Left Column: AI Advisor Chat Interface (60%) -->
+            <div class="advisor-chat-col">
+              <div class="card chat-card">
+                <div class="card-header">
+                  <div class="card-title-group">
+                    <h2 class="card-title">AI Financial Advisor</h2>
+                    <span class="card-subtitle">Context-aware guidance grounded in your real balance and rules</span>
+                  </div>
+                </div>
 
-            <!-- Quick Question Chips -->
-            <div class="chip-group" id="chatPromptChips" style="padding: 10px 16px; border-top: 1px solid var(--border); margin: 0;">
-              <button type="button" class="chip" data-q="Compare my needs and wants">Needs vs. Wants</button>
-              <button type="button" class="chip" data-q="Can I afford ₹500 this weekend?">Can I afford ₹500?</button>
-              <button type="button" class="chip" data-q="Where can I cut back without starving?">Where to cut back?</button>
-              <button type="button" class="chip" data-q="How do I glide through a lean month?">Lean month tips</button>
+                <div class="chat-messages" id="chatContainer"></div>
+
+                <div class="prompt-chips" id="quickPromptChips">
+                  <button type="button" class="chip-btn" data-prompt="Can I afford to spend ₹500 on dinner tonight?">Can I spend ₹500 tonight?</button>
+                  <button type="button" class="chip-btn" data-prompt="How am I doing on my Needs vs Wants balance?">Needs vs Wants balance</button>
+                  <button type="button" class="chip-btn" data-prompt="How long will my current balance last at this rate?">How long will cash last?</button>
+                  <button type="button" class="chip-btn" data-prompt="Give me a budget health check and spending tips.">Budget health check</button>
+                </div>
+
+                <div class="chat-input-row">
+                  <input type="text" id="chatInput" class="form-input" placeholder="Ask anything about your budget, allowance, or upcoming expenses..." autocomplete="off">
+                  <button type="button" class="btn-primary" id="sendChatBtn" style="width: auto; padding: 12px 22px;">Ask Advisor</button>
+                </div>
+              </div>
             </div>
 
-            <!-- Chat Input Bar -->
-            <div class="chat-input-bar">
-              <input type="text" id="chatInput" placeholder="Ask about your budget, canteen spending, or runway…" autocomplete="off">
-              <button type="button" class="chat-send-btn" id="chatSendBtn">
-                <span>Ask</span>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                  <line x1="22" y1="2" x2="11" y2="13"/>
-                  <polygon points="22 2 15 22 11 13 2 9 22 2"/>
-                </svg>
-              </button>
+            <!-- Right Column: Budget Discipline & Guardrails (40%) -->
+            <div class="advisor-rules-col">
+              <!-- Budget Allocation (Needs vs Wants) -->
+              <div class="card" id="needsWantsCard">
+                <div class="card-header">
+                  <div class="card-title-group">
+                    <h3 class="card-title">50/30/20 Budget Allocation</h3>
+                    <span class="card-subtitle">Essential Needs vs. Discretionary Wants discipline</span>
+                  </div>
+                  <span class="status-badge ok" id="compStatusBadge">Disciplined</span>
+                </div>
+
+                <!-- Proportional Spectrum Meter -->
+                <div class="split-meter-bar">
+                  <div class="split-meter-segment need" id="compMeterNeed" style="width: 50%;"></div>
+                  <div class="split-meter-segment want" id="compMeterWant" style="width: 50%;"></div>
+                </div>
+
+                <div class="split-legend">
+                  <div class="legend-item">
+                    <span class="legend-dot need"></span>
+                    <span class="legend-name">Needs (50% target)</span>
+                    <span class="legend-pct" id="compNeedPct">0%</span>
+                    <span class="legend-amt" id="compNeedAmount">₹0</span>
+                  </div>
+                  <div class="legend-item">
+                    <span class="legend-dot want"></span>
+                    <span class="legend-name">Wants (30% target)</span>
+                    <span class="legend-pct" id="compWantPct">0%</span>
+                    <span class="legend-amt" id="compWantAmount">₹0</span>
+                  </div>
+                </div>
+
+                <div class="split-advice" id="compAdviceBanner">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="16" x2="12" y2="12"/>
+                    <line x1="12" y1="8" x2="12.01" y2="8"/>
+                  </svg>
+                  <span id="compAdviceText">Tag expenses as Need or Want to monitor your equilibrium.</span>
+                </div>
+
+                <div id="compNeedCount" hidden></div>
+                <div id="compWantCount" hidden></div>
+              </div>
+
+              <!-- Guardrails Card -->
+              <div class="card">
+                <div class="card-header">
+                  <div class="card-title-group">
+                    <h3 class="card-title">Financial Guardrails</h3>
+                    <span class="card-subtitle">Automated rules</span>
+                  </div>
+                </div>
+
+                <div class="guardrail-list">
+                  <div class="guardrail-item">
+                    <div class="guardrail-dot need"></div>
+                    <div class="guardrail-info">
+                      <span class="guardrail-name">Needs Discipline</span>
+                      <span class="guardrail-desc">Essential food, rent & transit capped at 50%</span>
+                    </div>
+                  </div>
+                  <div class="guardrail-item">
+                    <div class="guardrail-dot want"></div>
+                    <div class="guardrail-info">
+                      <span class="guardrail-name">Wants Allowance</span>
+                      <span class="guardrail-desc">Discretionary leisure & dining capped at 30%</span>
+                    </div>
+                  </div>
+                  <div class="guardrail-item">
+                    <div class="guardrail-dot buffer"></div>
+                    <div class="guardrail-info">
+                      <span class="guardrail-name">Safety Shield</span>
+                      <span class="guardrail-desc">20% auto-diverted into emergency cushion</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div style="margin-top: 16px;">
+                  <a href="#plan" data-tab="plan" class="btn-secondary" style="display: block; text-align: center; text-decoration: none; width: 100%;">
+                    Configure Budget Plan →
+                  </a>
+                </div>
+              </div>
+
+              <!-- Quick Log Presets -->
+              <div class="card">
+                <div class="card-header">
+                  <div class="card-title-group">
+                    <h3 class="card-title">Quick Presets</h3>
+                    <span class="card-subtitle">Fast one-click expense entry</span>
+                  </div>
+                </div>
+
+                <div class="quick-preset-grid">
+                  <button type="button" class="preset-pill" data-action-mode="exp">
+                    <span>🍔 Campus Cafeteria</span>
+                  </button>
+                  <button type="button" class="preset-pill" data-action-mode="exp">
+                    <span>🚗 Metro / Fuel</span>
+                  </button>
+                  <button type="button" class="preset-pill" data-action-mode="exp">
+                    <span>🛒 Groceries & Supplies</span>
+                  </button>
+                  <button type="button" class="preset-pill" data-action-mode="inc">
+                    <span>💰 Pocket Money Deposit</span>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
-          <p class="card-subtitle" style="text-align: center; font-size: 11px; margin-top: 10px;">
-            TRACE Financial AI reasons across your records calmly. Not certified legal advice.
-          </p>
         </section>
 
       </main>
     </div>
 
-    <!-- Mobile Bottom Navigation Bar (< 900px) -->
+    <!-- Mobile Bottom Navigation (Only visible on small phone screens) -->
     <nav class="bottom-nav">
       <a href="#overview" class="bottom-tab" data-tab="overview" aria-current="page">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M3 11l9-8 9 8v10H3z"/>
         </svg>
         <span>Overview</span>
       </a>
       <a href="#add" class="bottom-tab" data-tab="add">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="10"/>
           <line x1="12" y1="8" x2="12" y2="16"/>
           <line x1="8" y1="12" x2="16" y2="12"/>
@@ -650,7 +750,7 @@
         <span>Add</span>
       </a>
       <a href="#plan" class="bottom-tab" data-tab="plan">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
           <line x1="16" y1="2" x2="16" y2="6"/>
           <line x1="8" y1="2" x2="8" y2="6"/>
@@ -659,64 +759,67 @@
         <span>Plan</span>
       </a>
       <a href="#insights" class="bottom-tab" data-tab="insights">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <line x1="18" y1="20" x2="18" y2="10"/>
           <line x1="12" y1="20" x2="12" y2="4"/>
-          <line x1="6" y1="20" x2="6" y2="14"/>
+          <line x1="6" y1="20" x2="6" y2="16"/>
         </svg>
         <span>Insights</span>
       </a>
       <a href="#ask" class="bottom-tab" data-tab="ask">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
         </svg>
-        <span>AI Guide</span>
+        <span>Advisor</span>
       </a>
     </nav>
   </div>
 
-  <!-- API Key Modal -->
+  <!-- Hidden Compatibility Stubs for Legacy Selectors -->
+  <span id="sidebarPulseText" hidden></span>
+
+  <!-- API Key Credentials Dialog -->
   <dialog class="custom-modal" id="apiKeyModal">
     <div class="modal-box">
       <div class="modal-header">
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--brand-mint);">
-            <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/>
+        <div class="modal-title-wrap">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
           </svg>
-          <h3 style="font-size: 16px; font-weight: 700;">AI Engine Credentials</h3>
+          <h3>API Credentials</h3>
         </div>
         <button type="button" class="modal-close-btn" id="closeApiKeyModalBtn" aria-label="Close">×</button>
       </div>
-      <p class="card-subtitle" style="margin-top: 8px;">
-        Connect your Google Gemini API key to activate natural-language budgeting advice and receipt scanning.
+
+      <p class="modal-desc">
+        Configure your Gemini API key to enable smart receipt recognition and financial advice.
       </p>
 
-      <div style="margin-top: 16px;">
-        <label for="aiProviderSelect" class="field-label">AI Engine</label>
-        <select id="aiProviderSelect" class="form-input" style="margin-top: 6px;">
-          <option value="gemini">Google Gemini (Recommended — Connected)</option>
+      <div class="form-group" style="margin-top: 14px;">
+        <label for="aiProviderSelect" class="form-label">Provider</label>
+        <select id="aiProviderSelect" class="form-input">
+          <option value="gemini">Google Gemini (Recommended)</option>
           <option value="openai">OpenAI</option>
           <option value="anthropic">Anthropic Claude</option>
         </select>
       </div>
 
-      <div style="margin-top: 14px;">
-        <label for="apiKeyInput" class="field-label">API Key</label>
-        <div style="position: relative; margin-top: 6px;">
-          <input type="password" id="apiKeyInput" class="form-input" placeholder="Paste your API key here" autocomplete="off" style="padding-right: 60px;">
-          <button type="button" id="toggleApiKeyVisibility" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 12px; font-weight: 700; color: var(--ink-secondary); background: none; border: none; cursor: pointer;">Show</button>
+      <div class="form-group">
+        <label for="apiKeyInput" class="form-label">API Key</label>
+        <div class="input-with-action">
+          <input type="password" id="apiKeyInput" class="form-input" placeholder="Paste key here" autocomplete="off">
+          <button type="button" id="toggleApiKeyVisibility" class="input-action-btn">Show</button>
         </div>
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
-          <small style="color: var(--ink-tertiary);">
-            Free tier at <a href="https://aistudio.google.com/" target="_blank" rel="noopener" style="color: var(--brand-mint); font-weight: 700;">Google AI Studio</a>
-          </small>
-          <span id="apiKeyStatusBadge" class="status-pill ok" style="padding: 2px 8px; font-size: 11px; margin-top: 0;">Connected</span>
+        <div class="key-footer">
+          <small>Get a free key from <a href="https://aistudio.google.com/" target="_blank" rel="noopener">Google AI Studio</a></small>
+          <span id="apiKeyStatusBadge" class="status-badge ok">Connected</span>
         </div>
       </div>
 
-      <div style="display: flex; gap: 10px; margin-top: 20px;">
-        <button type="button" class="btn-primary" id="saveApiKeyBtn" style="margin-top: 0; flex: 2;">Save & Test Key</button>
-        <button type="button" class="btn-secondary" id="clearApiKeyBtn" style="color: var(--color-bad); flex: 1;">Clear</button>
+      <div class="modal-actions">
+        <button type="button" class="btn-primary" id="saveApiKeyBtn">Save Credentials</button>
+        <button type="button" class="btn-ghost" id="clearApiKeyBtn">Clear</button>
       </div>
     </div>
   </dialog>

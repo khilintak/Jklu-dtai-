@@ -109,6 +109,37 @@
     }
   }
 
+  // Theme Management (Light / Dark)
+  const THEME_SUN_ICON = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`;
+  const THEME_MOON_ICON = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`;
+
+  function applyTheme(theme) {
+    const valid = theme === 'light' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', valid);
+    if (document.body) document.body.setAttribute('data-theme', valid);
+    try {
+      localStorage.setItem('trace-theme', valid);
+    } catch (e) {}
+
+    const iconSvg = valid === 'dark' ? THEME_SUN_ICON : THEME_MOON_ICON;
+    const titleText = valid === 'dark' ? 'Switch to Light theme' : 'Switch to Dark theme';
+
+    $$('[data-action="toggle-theme"], #themeToggleBtn, #topbarThemeBtn').forEach(btn => {
+      const iconWrap = btn.querySelector('.theme-btn-icon');
+      if (iconWrap) {
+        iconWrap.innerHTML = iconSvg;
+      } else if (!btn.querySelector('.theme-btn-label')) {
+        btn.innerHTML = iconSvg;
+      }
+      const label = btn.querySelector('.theme-btn-label');
+      if (label) {
+        label.textContent = valid === 'dark' ? 'Light' : 'Dark';
+      }
+      btn.title = titleText;
+      btn.setAttribute('aria-label', titleText);
+    });
+  }
+
   // Route & View Switching
   function switchTab(tabName) {
     const validTabs = ['overview', 'add', 'plan', 'insights', 'ask'];
@@ -118,8 +149,21 @@
     // Update URL hash without scroll jump
     history.replaceState(null, '', `#${tabName}`);
 
-    // Update bottom nav & sidebar active links
-    $$('.bottom-tab, .nav-item a').forEach(el => {
+    // Update page title
+    const headingEl = $('pageHeading');
+    const TAB_TITLES = {
+      overview: 'Dashboard',
+      add: 'New Transaction',
+      plan: 'Budget Plan & Settings',
+      insights: 'Analytics & Insights',
+      ask: 'AI Financial Advisor'
+    };
+    if (headingEl && TAB_TITLES[tabName]) {
+      headingEl.textContent = TAB_TITLES[tabName];
+    }
+
+    // Update bottom nav & desktop sidebar active links
+    $$('.bottom-tab, .nav-item a, .top-tab, .sidebar-nav-item').forEach(el => {
       if (el.dataset.tab === tabName) {
         el.setAttribute('aria-current', 'page');
       } else {
@@ -218,6 +262,7 @@
 
     // Render Recent Transactions (with filter and Want/Need badge)
     const txListEl = $('recentTxList');
+    const emptyStateEl = $('txEmptyState');
     if (txListEl) {
       // Calculate filter counts
       const needCount = transactions.filter(t => t.type === 'exp' && t.classification !== 'want').length;
@@ -233,8 +278,20 @@
       }
 
       if (filteredTx.length === 0) {
-        txListEl.innerHTML = `<li class="empty-state">No ${currentTxFilter === 'all' ? '' : (currentTxFilter === 'need' ? 'Needs' : 'Wants')} transactions recorded.</li>`;
+        if (emptyStateEl) {
+          emptyStateEl.style.display = 'flex';
+          const emptySub = emptyStateEl.querySelector('.empty-state-sub');
+          if (emptySub) {
+            emptySub.textContent = currentTxFilter === 'all'
+              ? 'Log an expense or income entry using the buttons above to begin tracking.'
+              : `No transactions tagged as ${currentTxFilter === 'need' ? 'Needs' : 'Wants'} recorded yet.`;
+          }
+          txListEl.innerHTML = '';
+        } else {
+          txListEl.innerHTML = `<li class="empty-state">No ${currentTxFilter === 'all' ? '' : (currentTxFilter === 'need' ? 'Needs' : 'Wants')} transactions recorded.</li>`;
+        }
       } else {
+        if (emptyStateEl) emptyStateEl.style.display = 'none';
         txListEl.innerHTML = filteredTx.slice(0, 10).map(tx => {
           const isInc = tx.type === 'inc';
           const icon = isInc ? (SOURCE_ICONS[tx.category] || SOURCE_ICONS['Other']) : (CATEGORY_ICONS[tx.category] || CATEGORY_ICONS['Other']);
@@ -266,27 +323,43 @@
       }
     }
 
+    // Render Dashboard Cashflow Overview Stats
+    const totalInflow = transactions.filter(t => t.type === 'inc').reduce((acc, t) => acc + (Number(t.amount) || 0), 0);
+    const totalOutflow = transactions.filter(t => t.type === 'exp').reduce((acc, t) => acc + (Number(t.amount) || 0), 0);
+    const netFlow = totalInflow - totalOutflow;
+
+    const dashInc = $('dashIncome');
+    if (dashInc) dashInc.textContent = fmt(totalInflow);
+    const dashExp = $('dashExpenses');
+    if (dashExp) dashExp.textContent = fmt(totalOutflow);
+    const dashNet = $('dashNetSavings');
+    if (dashNet) {
+      dashNet.textContent = (netFlow >= 0 ? '+' : '') + fmt(netFlow);
+      dashNet.className = `cashflow-val ${netFlow >= 0 ? 'income' : 'expense'}`;
+    }
+
     // Render Upcoming Bills widget (Top 3 unpaid)
     const upcomingBillsList = $('upcomingBillsList');
     if (upcomingBillsList) {
       const unpaid = bills.filter(b => !b.paid).sort((a, b) => a.due_offset - b.due_offset);
       if (unpaid.length === 0) {
-        upcomingBillsList.innerHTML = '<li class="empty-state">No pending bills right now. All clear.</li>';
+        upcomingBillsList.innerHTML = '<li class="empty-state-mini">No pending bills right now. All clear.</li>';
       } else {
-        upcomingBillsList.innerHTML = unpaid.slice(0, 4).map(bill => {
+        upcomingBillsList.innerHTML = unpaid.slice(0, 3).map(bill => {
           const daysLeft = bill.due_offset - appState.todayOffset;
           const dueBadge = daysLeft < 0 ? 'Overdue!' : daysLeft === 0 ? 'Due today' : `Due in ${daysLeft}d`;
           return `
-            <li class="list-item">
-              <div class="category-icon">${CATEGORY_ICONS['Bills']}</div>
-              <div class="item-content">
-                <div class="item-title">${escapeHtml(bill.name)}</div>
-                <div class="item-meta" style="color: ${daysLeft <= 2 ? '#ef4444' : 'var(--ink-secondary)'}; font-weight: 700;">
+            <li class="cashflow-item">
+              <div style="display: flex; flex-direction: column; min-width: 0;">
+                <span class="item-title" style="font-size: 13px;">${escapeHtml(bill.name)}</span>
+                <span style="font-size: 11px; color: ${daysLeft <= 2 ? '#ef4444' : 'var(--ink-secondary)'}; font-weight: 600;">
                   ${dueBadge}
-                </div>
+                </span>
               </div>
-              <div class="item-amount">${fmt(bill.amount)}</div>
-              <button class="btn-secondary" style="padding: 6px 14px; font-size: 13px;" data-act="pay-bill" data-id="${bill.id}">Pay</button>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 13px; font-weight: 600;">${fmt(bill.amount)}</span>
+                <button type="button" class="btn-secondary" style="padding: 3px 8px; font-size: 11px;" data-act="pay-bill" data-id="${bill.id}">Pay</button>
+              </div>
             </li>
           `;
         }).join('');
@@ -435,7 +508,7 @@
     if (txMode === 'exp') {
       const newDaily = Math.max(0, (appState.financials.usable - amountVal) / Math.max(1, horizon));
       const diff = safeToSpend - newDaily;
-      const intentLabel = currentTxIntent === 'want' 
+      const intentLabel = currentTxIntent === 'want'
         ? `<span style="color:#b062bd; font-weight:800;">✨ You Want</span> (Discretionary)`
         : `<span style="color:var(--brand-mint); font-weight:800;">🛡️ You Need</span> (Essential)`;
       impactEl.innerHTML = `Tagged as ${intentLabel}. Logging <b>${fmt(amountVal)}</b> adjusts safe-to-spend from <b>${fmt(safeToSpend)}</b> to <b>${fmt(newDaily)}/day</b> (-${fmt(diff)}/day).`;
@@ -650,17 +723,17 @@
       }
     });
 
-    // Theme Toggle
-    const themeBtn = $('themeToggleBtn');
-    if (themeBtn) {
-      themeBtn.addEventListener('click', () => {
-        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+    // Theme Toggle (Supports all toggle buttons across sidebar, topbar & dialogs)
+    $$('[data-action="toggle-theme"], #themeToggleBtn, #topbarThemeBtn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
         const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        document.documentElement.setAttribute('data-theme', newTheme);
-        localStorage.setItem('trace-theme', newTheme);
+        applyTheme(newTheme);
         Motion.toast(`Switched to ${newTheme} theme`);
+        Motion.haptic(10);
       });
-    }
+    });
 
     // View Mode Toggle (Desktop Dashboard vs Mobile View)
     $$('.view-mode-btn').forEach(btn => {
@@ -1180,11 +1253,10 @@
 
   // Initial load
   async function init() {
-    // Restore saved theme
-    const savedTheme = localStorage.getItem('trace-theme');
-    if (savedTheme) {
-      document.documentElement.setAttribute('data-theme', savedTheme);
-    }
+    // Restore saved theme or detect system preference
+    const savedTheme = localStorage.getItem('trace-theme') ||
+      (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+    applyTheme(savedTheme);
 
     setupEventListeners();
 
