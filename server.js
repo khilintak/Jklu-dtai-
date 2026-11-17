@@ -363,10 +363,28 @@ async function callGeminiVision(apiKey, imageBuffer, mimeType) {
   throw lastError || new Error('Gemini Vision failed');
 }
 
-// Seed default data if empty
+// Initialize default settings and greeting without auto-populating transactions
+function initializeDefaultSettings() {
+  if (getSetting('pct') === null) setSetting('pct', 20);
+  if (getSetting('goal') === null) setSetting('goal', 3000);
+  if (getSetting('currency') === null) setSetting('currency', '₹');
+
+  try {
+    const chatCount = db.prepare('SELECT COUNT(*) as count FROM chat_history').get().count;
+    if (chatCount === 0) {
+      db.prepare('INSERT INTO chat_history (role, content) VALUES (?, ?)').run(
+        'assistant',
+        'Hey there! I am TRACE, your financial companion for irregular months. Ask me anything about your budget, affordability, or how to stretch your cash.'
+      );
+    }
+  } catch (e) {}
+}
+
+initializeDefaultSettings();
+
+// Seed sample student data (only invoked explicitly via Load Sample button)
 function seedDatabase(force = false) {
-  const txCount = db.prepare('SELECT COUNT(*) as count FROM transactions').get().count;
-  if (!force && txCount > 0) return;
+  if (!force) return;
 
   const T = getDayNumber();
 
@@ -422,11 +440,8 @@ function seedDatabase(force = false) {
     INSERT INTO chat_history (role, content)
     VALUES (?, ?)
   `);
-  insertChat.run('assistant', 'Hey there! I am TRACE, your calm money companion designed for students and irregular earners. Ask me anything about your spending, affordability, or how to stretch your cash until next money arrives.');
+  insertChat.run('assistant', 'Sample student data loaded! You now have typical college income, expenses, and pending bills. Ask me anything to test the analysis.');
 }
-
-// Run initial seed if brand new database
-seedDatabase();
 
 // Calculation engine
 function calculateState() {
@@ -471,7 +486,10 @@ function calculateState() {
   // Status message and badge category
   let statusBadge = 'ok';
   let statusMessage = 'Comfortable at your current pace';
-  if (usable < 0) {
+  if (totalIncome === 0 && totalExpense === 0) {
+    statusBadge = 'ok';
+    statusMessage = 'No transactions recorded yet. Tap + Add Entry to begin.';
+  } else if (usable < 0) {
     statusBadge = 'bad';
     statusMessage = `Over by ₹${Math.round(Math.abs(usable)).toLocaleString('en-IN')} before next money`;
   } else if (safeToSpend < avgDailySpend) {
@@ -548,7 +566,10 @@ function calculateState() {
 
   let comparisonAdvice = 'Balanced: Your essentials and discretionary spending are proportional.';
   let comparisonStatus = 'good';
-  if (wantsPct > 50) {
+  if (totalExpense === 0) {
+    comparisonAdvice = 'No expenses recorded yet. Tag transactions as "You Need" or "You Want" to see your balance.';
+    comparisonStatus = 'good';
+  } else if (wantsPct > 50) {
     comparisonAdvice = `⚠️ Alert: Wants (${wantsPct}%) are higher than Needs (${needsPct}%). In uneven months, curbing treats keeps cash safe!`;
     comparisonStatus = 'danger';
   } else if (wantsPct > 35) {
