@@ -40,14 +40,14 @@
           <p class="login-subtitle">Enter your account credentials to access your financial dashboard.</p>
         </div>
 
-        <!-- Form Error Banner -->
-        <div class="login-error-banner" id="loginError" style="display: none;">
+        <!-- Form Error Banner (Hidden by default until failed submission) -->
+        <div class="login-error-banner" id="loginError" hidden style="display: none;">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="10"/>
             <line x1="12" y1="8" x2="12" y2="12"/>
             <line x1="12" y1="16" x2="12.01" y2="16"/>
           </svg>
-          <span id="loginErrorMsg">Invalid email or password. Please try again.</span>
+          <span id="loginErrorMsg"></span>
         </div>
 
         <!-- Login Form -->
@@ -181,23 +181,23 @@
           <div class="onboarding-card-grid-2x2">
             <div class="ob-select-card-detailed active" data-income-source="Pocket Money">
               <div class="ob-card-badge">Family Support</div>
-              <span class="ob-card-title">👨‍👩‍👧 Pocket Money / Allowance</span>
-              <span class="ob-card-sub">Regular or ad-hoc support from parents or guardians</span>
+              <span class="ob-card-title">Pocket Money / Allowance</span>
+              <span class="ob-card-sub">Regular support from parents or family</span>
             </div>
             <div class="ob-select-card-detailed" data-income-source="Stipend / Salary">
               <div class="ob-card-badge">Fixed Inflow</div>
-              <span class="ob-card-title">💼 Stipend or Salary</span>
-              <span class="ob-card-sub">Fixed monthly pay from an internship or campus job</span>
+              <span class="ob-card-title">Stipend or Salary</span>
+              <span class="ob-card-sub">Fixed monthly compensation from internship or job</span>
             </div>
             <div class="ob-select-card-detailed" data-income-source="Freelance & Gigs">
               <div class="ob-card-badge">Variable Gigs</div>
-              <span class="ob-card-title">💻 Freelance & Side Gigs</span>
-              <span class="ob-card-sub">Variable earnings from client work, design, or coding</span>
+              <span class="ob-card-title">Freelance & Side Gigs</span>
+              <span class="ob-card-sub">Variable earnings from client contracts and design</span>
             </div>
             <div class="ob-select-card-detailed" data-income-source="Scholarship / Grant">
               <div class="ob-card-badge">Academic</div>
-              <span class="ob-card-title">🎓 Scholarship or Grant</span>
-              <span class="ob-card-sub">Disbursements from academic grants, aid, or awards</span>
+              <span class="ob-card-title">Scholarships & Grants</span>
+              <span class="ob-card-sub">Disbursements from academic grants or institutional aid</span>
             </div>
           </div>
         </div>
@@ -249,10 +249,12 @@
           <div class="onboarding-card-grid-2x2">
             <div class="ob-multi-card active" data-cat="Food">
               <div class="ob-multi-card-content">
-                <span class="ob-multi-card-icon">🍔</span>
+                <span class="ob-multi-card-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+                </span>
                 <div class="ob-multi-card-text">
-                  <span class="ob-multi-card-title">Canteen & Delivery</span>
-                  <span class="ob-multi-card-sub">Cafeteria, Zomato, Swiggy</span>
+                  <span class="ob-multi-card-title">Canteen & Dining</span>
+                  <span class="ob-multi-card-sub">Cafeteria, deliveries, meals</span>
                 </div>
               </div>
               <div class="ob-check-indicator">✓</div>
@@ -260,10 +262,12 @@
 
             <div class="ob-multi-card active" data-cat="Transport">
               <div class="ob-multi-card-content">
-                <span class="ob-multi-card-icon">🚇</span>
+                <span class="ob-multi-card-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+                </span>
                 <div class="ob-multi-card-text">
                   <span class="ob-multi-card-title">Transit & Commute</span>
-                  <span class="ob-multi-card-sub">Metro, auto, cab, petrol</span>
+                  <span class="ob-multi-card-sub">Metro, auto, cab, fuel</span>
                 </div>
               </div>
               <div class="ob-check-indicator">✓</div>
@@ -271,7 +275,9 @@
 
             <div class="ob-multi-card" data-cat="Shopping">
               <div class="ob-multi-card-content">
-                <span class="ob-multi-card-icon">🛍️</span>
+                <span class="ob-multi-card-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                </span>
                 <div class="ob-multi-card-text">
                   <span class="ob-multi-card-title">Shopping & Leisure</span>
                   <span class="ob-multi-card-sub">Clothes, electronics, gear</span>
@@ -282,10 +288,12 @@
 
             <div class="ob-multi-card" data-cat="Bills">
               <div class="ob-multi-card-content">
-                <span class="ob-multi-card-icon">📱</span>
+                <span class="ob-multi-card-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+                </span>
                 <div class="ob-multi-card-text">
                   <span class="ob-multi-card-title">Subscriptions & Tech</span>
-                  <span class="ob-multi-card-sub">OTT, Spotify, cloud, recharge</span>
+                  <span class="ob-multi-card-sub">OTT, cloud, mobile recharge</span>
                 </div>
               </div>
               <div class="ob-check-indicator">✓</div>
@@ -293,7 +301,9 @@
 
             <div class="ob-multi-card" data-cat="Study">
               <div class="ob-multi-card-content">
-                <span class="ob-multi-card-icon">📚</span>
+                <span class="ob-multi-card-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                </span>
                 <div class="ob-multi-card-text">
                   <span class="ob-multi-card-title">Study & Academics</span>
                   <span class="ob-multi-card-sub">Textbooks, courses, printing</span>
@@ -304,7 +314,9 @@
 
             <div class="ob-multi-card" data-cat="Fun">
               <div class="ob-multi-card-content">
-                <span class="ob-multi-card-icon">☕</span>
+                <span class="ob-multi-card-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                </span>
                 <div class="ob-multi-card-text">
                   <span class="ob-multi-card-title">Cafes & Hangouts</span>
                   <span class="ob-multi-card-sub">Coffee, evening snacks, outings</span>
@@ -328,10 +340,10 @@
           <div class="ob-bills-container">
             <!-- Preset Quick-Fill Chips -->
             <div class="ob-quick-bill-chips">
-              <button type="button" class="ob-quick-bill-btn" data-preset-name="Hostel Rent" data-preset-amount="3000" data-preset-days="10">+ 🏠 Hostel Rent (₹3k)</button>
-              <button type="button" class="ob-quick-bill-btn" data-preset-name="Mobile / Wi-Fi" data-preset-amount="499" data-preset-days="7">+ 📶 Recharge (₹499)</button>
-              <button type="button" class="ob-quick-bill-btn" data-preset-name="Mess Card" data-preset-amount="2500" data-preset-days="5">+ 🍱 Mess Fee (₹2.5k)</button>
-              <button type="button" class="ob-quick-bill-btn" data-preset-name="OTT Subscriptions" data-preset-amount="299" data-preset-days="12">+ 📺 OTT Subs (₹299)</button>
+              <button type="button" class="ob-quick-bill-btn" data-preset-name="Hostel Rent" data-preset-amount="3000" data-preset-days="10">+ Hostel Rent (₹3,000)</button>
+              <button type="button" class="ob-quick-bill-btn" data-preset-name="Mobile / Wi-Fi" data-preset-amount="499" data-preset-days="7">+ Mobile / Wi-Fi (₹499)</button>
+              <button type="button" class="ob-quick-bill-btn" data-preset-name="Mess Plan" data-preset-amount="2500" data-preset-days="5">+ Mess Plan (₹2,500)</button>
+              <button type="button" class="ob-quick-bill-btn" data-preset-name="Subscriptions" data-preset-amount="299" data-preset-days="12">+ Subscriptions (₹299)</button>
             </div>
 
             <label class="ob-checkbox-banner">
@@ -370,19 +382,19 @@
 
           <div class="onboarding-card-grid-vertical">
             <div class="ob-select-card-detailed active" data-budget-style="Balanced 50/30/20">
-              <div class="ob-card-badge">Recommended Standard</div>
-              <span class="ob-card-title">⚖️ Balanced Discipline (50 / 30 / 20)</span>
-              <span class="ob-card-sub">50% Essential Needs • 30% Leisure Wants • 20% Savings. Ideal balance of lifestyle and steady cushion growth.</span>
+              <div class="ob-card-badge">Standard</div>
+              <span class="ob-card-title">Balanced Discipline (50 / 30 / 20)</span>
+              <span class="ob-card-sub">50% Essential Needs &bull; 30% Discretionary Wants &bull; 20% Emergency Savings. Standard balanced financial model.</span>
             </div>
             <div class="ob-select-card-detailed" data-budget-style="Frugal 60/15/25">
-              <div class="ob-card-badge">Maximum Savings</div>
-              <span class="ob-card-title">🛡️ Frugal Fortress (60 / 15 / 25)</span>
-              <span class="ob-card-sub">60% Essential Needs • 15% Leisure Wants • 25% Heavy Savings. Built for tight budgets and aggressive cash accumulation.</span>
+              <div class="ob-card-badge">High Savings</div>
+              <span class="ob-card-title">Frugal Fortress (60 / 15 / 25)</span>
+              <span class="ob-card-sub">60% Essential Needs &bull; 15% Discretionary Wants &bull; 25% Heavy Savings. Built for tight runway and rapid capital preservation.</span>
             </div>
             <div class="ob-select-card-detailed" data-budget-style="Flexible 45/40/15">
-              <div class="ob-card-badge">Social Lifestyle</div>
-              <span class="ob-card-title">🌴 Flexible Lifestyle (45 / 40 / 15)</span>
-              <span class="ob-card-sub">45% Essential Needs • 40% Leisure Wants • 15% Light Savings. Extra room for dining out, weekend trips, and leisure.</span>
+              <div class="ob-card-badge">Lifestyle</div>
+              <span class="ob-card-title">Flexible Lifestyle (45 / 40 / 15)</span>
+              <span class="ob-card-sub">45% Essential Needs &bull; 40% Discretionary Wants &bull; 15% Light Savings. Additional flexibility for dining out and social events.</span>
             </div>
           </div>
         </div>
@@ -433,25 +445,25 @@
           </div>
 
           <div class="onboarding-card-grid-2x2">
-            <div class="ob-select-card-detailed active" data-goal="Never Go Broke">
-              <div class="ob-card-badge">Priority 1</div>
-              <span class="ob-card-title">🛑 Never Go Broke Early</span>
-              <span class="ob-card-sub">Eliminate month-end panic and make your money last the full cycle</span>
+            <div class="ob-select-card-detailed active" data-goal="Extend Runway">
+              <div class="ob-card-badge">Runway Priority</div>
+              <span class="ob-card-title">Extend Cash Runway</span>
+              <span class="ob-card-sub">Prevent month-end deficits and ensure cash lasts the full cycle</span>
             </div>
-            <div class="ob-select-card-detailed" data-goal="Save for Big Purchase">
-              <div class="ob-card-badge">Specific Target</div>
-              <span class="ob-card-title">🎯 Save For A Big Purchase</span>
-              <span class="ob-card-sub">Save up for a laptop, new phone, road trip, or gadget</span>
+            <div class="ob-select-card-detailed" data-goal="Save for Goal">
+              <div class="ob-card-badge">Targeted Asset</div>
+              <span class="ob-card-title">Targeted Purchase Goal</span>
+              <span class="ob-card-sub">Systematically save for a laptop, gear, or course purchase</span>
             </div>
-            <div class="ob-select-card-detailed" data-goal="Build Emergency Fund">
+            <div class="ob-select-card-detailed" data-goal="Build Cushion">
               <div class="ob-card-badge">Safety Net</div>
-              <span class="ob-card-title">🛡️ Build An Emergency Shield</span>
-              <span class="ob-card-sub">Hit ₹5,000 to ₹10,000 in untouchable liquid reserves</span>
+              <span class="ob-card-title">Emergency Shield Buffer</span>
+              <span class="ob-card-sub">Build a resilient ₹5,000 to ₹10,000 liquid emergency reserve</span>
             </div>
             <div class="ob-select-card-detailed" data-goal="Track Every Rupee">
-              <div class="ob-card-badge">Daily Habit</div>
-              <span class="ob-card-title">📊 Track Every Single Rupee</span>
-              <span class="ob-card-sub">Zero mystery spending, full discipline and transaction awareness</span>
+              <div class="ob-card-badge">Discipline</div>
+              <span class="ob-card-title">Comprehensive Ledger Tracking</span>
+              <span class="ob-card-sub">Eliminate mystery spending through disciplined daily logging</span>
             </div>
           </div>
 
@@ -482,8 +494,8 @@
               </div>
             </div>
             <div class="preview-tags-row">
-              <span class="preview-tag-pill" id="obPreviewBudgetStyle">⚖️ Balanced 50/30/20</span>
-              <span class="preview-tag-pill" id="obPreviewGoal">🛑 Never Go Broke</span>
+              <span class="preview-tag-pill" id="obPreviewBudgetStyle">Plan: Balanced 50/30/20</span>
+              <span class="preview-tag-pill" id="obPreviewGoal">Goal: Extend Runway</span>
             </div>
           </div>
         </div>
@@ -612,12 +624,11 @@
             <span class="theme-btn-label">Theme</span>
           </button>
 
-          <button type="button" class="sidebar-footer-btn" id="apiKeySettingsBtn" title="API Credentials">
+          <button type="button" class="sidebar-footer-btn" id="demoDataToggleBtn" title="Load Sample Tracking Data">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="3"/>
-              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
             </svg>
-            <span>Settings</span>
+            <span>Demo Data</span>
           </button>
         </div>
       </div>
@@ -677,10 +688,13 @@
             <div class="uncalibrated-banner-left">
               <span class="uncalibrated-badge">Setup Needed</span>
               <div class="uncalibrated-banner-text">
-                <strong>Your TRACE account is at ₹0.</strong> Complete the 8-question setup walkthrough to calculate your safe daily spending allowance.
+                <strong>Your TRACE account is at ₹0.</strong> Complete the 8-question setup walkthrough or load realistic demo data.
               </div>
             </div>
-            <button type="button" class="btn-primary" id="launchSetupBannerBtn" style="padding: 8px 16px; font-size: 12.5px; white-space: nowrap;">Start Setup Wizard →</button>
+            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+              <button type="button" class="btn-secondary" id="loadDemoBannerBtn" style="padding: 8px 14px; font-size: 12.5px; white-space: nowrap;">⚡ Load Live Demo Data</button>
+              <button type="button" class="btn-primary" id="launchSetupBannerBtn" style="padding: 8px 16px; font-size: 12.5px; white-space: nowrap;">Start Setup Wizard →</button>
+            </div>
           </div>
 
           <!-- 4-Card Desktop KPI Banner -->
@@ -1252,16 +1266,20 @@
 
                 <div class="quick-preset-grid">
                   <button type="button" class="preset-pill" data-action-mode="exp">
-                    <span>🍔 Campus Cafeteria</span>
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+                    <span>Campus Dining</span>
                   </button>
                   <button type="button" class="preset-pill" data-action-mode="exp">
-                    <span>🚗 Metro / Fuel</span>
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+                    <span>Transit & Commute</span>
                   </button>
                   <button type="button" class="preset-pill" data-action-mode="exp">
-                    <span>🛒 Groceries & Supplies</span>
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                    <span>Groceries & Supplies</span>
                   </button>
                   <button type="button" class="preset-pill" data-action-mode="inc">
-                    <span>💰 Pocket Money Deposit</span>
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+                    <span>Inflow Deposit</span>
                   </button>
                 </div>
               </div>
@@ -1316,52 +1334,6 @@
 
   <!-- Hidden Compatibility Stubs for Legacy Selectors -->
   <span id="sidebarPulseText" hidden></span>
-
-  <!-- API Key Credentials Dialog -->
-  <dialog class="custom-modal" id="apiKeyModal">
-    <div class="modal-box">
-      <div class="modal-header">
-        <div class="modal-title-wrap">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="3"/>
-            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
-          </svg>
-          <h3>API Credentials</h3>
-        </div>
-        <button type="button" class="modal-close-btn" id="closeApiKeyModalBtn" aria-label="Close">×</button>
-      </div>
-
-      <p class="modal-desc">
-        Configure your Gemini API key to enable smart receipt recognition and financial advice.
-      </p>
-
-      <div class="form-group" style="margin-top: 14px;">
-        <label for="aiProviderSelect" class="form-label">Provider</label>
-        <select id="aiProviderSelect" class="form-input">
-          <option value="gemini">Google Gemini (Recommended)</option>
-          <option value="openai">OpenAI</option>
-          <option value="anthropic">Anthropic Claude</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label for="apiKeyInput" class="form-label">API Key</label>
-        <div class="input-with-action">
-          <input type="password" id="apiKeyInput" class="form-input" placeholder="Paste key here" autocomplete="off">
-          <button type="button" id="toggleApiKeyVisibility" class="input-action-btn">Show</button>
-        </div>
-        <div class="key-footer">
-          <small>Get a free key from <a href="https://aistudio.google.com/" target="_blank" rel="noopener">Google AI Studio</a></small>
-          <span id="apiKeyStatusBadge" class="status-badge ok">Connected</span>
-        </div>
-      </div>
-
-      <div class="modal-actions">
-        <button type="button" class="btn-primary" id="saveApiKeyBtn">Save Credentials</button>
-        <button type="button" class="btn-ghost" id="clearApiKeyBtn">Clear</button>
-      </div>
-    </div>
-  </dialog>
 
   <!-- Application Logic -->
   <script src="/js/motion.js"></script>

@@ -394,8 +394,12 @@ function seedDatabase(force = false) {
 
   setSetting('pct', 20);
   setSetting('goal', 3000);
-  setSetting('nextDay', T + 10);
+  setSetting('nextDay', T + 14);
   setSetting('currency', '₹');
+  setSetting('income_source', 'Family Allowance');
+  setSetting('primary_goal', 'Extend Cash Runway');
+  setSetting('budget_style', 'Balanced 50/30/20');
+  setSetting('top_categories', JSON.stringify(['Food', 'Transport', 'Study']));
 
   // Insert seed incomes
   const insertTx = db.prepare(`
@@ -403,23 +407,24 @@ function seedDatabase(force = false) {
     VALUES (?, ?, ?, ?, ?, ?, ?)
   `);
 
-  insertTx.run('inc', 'Pocket money', 5000, 'Pocket money', T - 12, 1000, 'need');
-  insertTx.run('inc', 'Freelance project', 1800, 'Freelance', T - 5, 360, 'need');
+  insertTx.run('inc', 'Monthly Pocket Money', 7500, 'Pocket money', T - 14, 1500, 'need');
+  insertTx.run('inc', 'Freelance Project Stipend', 2400, 'Freelance', T - 5, 480, 'need');
 
   // Insert seed expenses with realistic Student Need vs Want classifications
   const seedExpenses = [
-    [0, 'Chai & Snacks', 30, 'Food', 'want'],
-    [0, 'Auto to college campus', 90, 'Transport', 'need'],
-    [1, 'Canteen lunch & juice', 140, 'Food', 'need'],
-    [2, 'Lab manual printouts', 45, 'Study', 'need'],
-    [3, 'Movie night with friends', 320, 'Fun', 'want'],
-    [4, 'Dinner at dhaba', 450, 'Food', 'want'],
-    [5, 'Metro smart card recharge', 300, 'Transport', 'need'],
-    [6, 'Semester notebook & pens', 95, 'Study', 'need'],
-    [7, 'Boat earphones', 699, 'Shopping', 'want'],
-    [8, 'Hostel pizza treat', 260, 'Food', 'want'],
-    [10, 'Evening tea & biscuits', 120, 'Food', 'want'],
-    [11, 'Auto shared ride', 110, 'Transport', 'need']
+    [0, 'Chai & Canteen Snacks', 40, 'Food', 'want'],
+    [0, 'Auto to Campus Lab', 90, 'Transport', 'need'],
+    [1, 'Mess Lunch & Juice', 140, 'Food', 'need'],
+    [2, 'Lab Manual Printouts', 45, 'Study', 'need'],
+    [3, 'Movie Night with Friends', 320, 'Fun', 'want'],
+    [4, 'Dinner at Dhaba', 420, 'Food', 'want'],
+    [5, 'Metro Smart Card Auto-Recharge', 300, 'Transport', 'need'],
+    [6, 'Semester Notebooks & Pens', 95, 'Study', 'need'],
+    [7, 'Boat Type-C Earphones', 599, 'Shopping', 'want'],
+    [8, 'Hostel Group Pizza Treat', 260, 'Food', 'want'],
+    [10, 'Study Group Snacks', 120, 'Food', 'want'],
+    [11, 'Auto Shared Ride to Station', 110, 'Transport', 'need'],
+    [13, 'Library Photocopies & Binder', 65, 'Study', 'need']
   ];
 
   for (const [offset, title, amount, cat, intent] of seedExpenses) {
@@ -432,15 +437,15 @@ function seedDatabase(force = false) {
     VALUES (?, ?, ?, 0)
   `);
 
-  insertBill.run('Mobile recharge (5G pack)', 299, T + 4);
-  insertBill.run('Hostel mess fees balance', 2000, T + 9);
+  insertBill.run('Mobile 5G Data Pack', 299, T + 5);
+  insertBill.run('Hostel Wi-Fi & Mess Balance', 1500, T + 12);
 
   // Insert welcome chat message
   const insertChat = db.prepare(`
     INSERT INTO chat_history (role, content)
     VALUES (?, ?)
   `);
-  insertChat.run('assistant', 'Sample student data loaded! You now have typical college income, expenses, and pending bills. Ask me anything to test the analysis.');
+  insertChat.run('assistant', 'Live student tracking data active! You have ₹9,900 in recorded inflows, balanced 50/30/20 expenses across canteen, transit, and study, and 2 scheduled bills. Ask me any question to test financial advice.');
 }
 
 // Calculation engine

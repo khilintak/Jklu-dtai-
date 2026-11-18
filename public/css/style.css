@@ -1998,9 +1998,9 @@ body {
   text-decoration: underline;
 }
 
-/* Error Alert */
+/* Error Alert (Hidden by default, shown only on failed auth attempt) */
 .login-error-banner {
-  display: flex;
+  display: none !important;
   align-items: center;
   gap: 10px;
   padding: 11px 14px;
@@ -2011,6 +2011,10 @@ body {
   font-size: 12.5px;
   margin-bottom: 18px;
   animation: shakeError 0.35s ease-in-out;
+}
+
+.login-error-banner.visible {
+  display: flex !important;
 }
 
 @keyframes shakeError {

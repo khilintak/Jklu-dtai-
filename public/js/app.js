@@ -532,7 +532,7 @@
       const diff = safeToSpend - newDaily;
       const intentLabel = currentTxIntent === 'want'
         ? `<span style="color:#b062bd; font-weight:800;">✨ You Want</span> (Discretionary)`
-        : `<span style="color:var(--brand-mint); font-weight:800;">🛡️ You Need</span> (Essential)`;
+        : `<span style="color:var(--brand-mint); font-weight:800;">You Need</span> (Essential)`;
       impactEl.innerHTML = `Tagged as ${intentLabel}. Logging <b>${fmt(amountVal)}</b> adjusts safe-to-spend from <b>${fmt(safeToSpend)}</b> to <b>${fmt(newDaily)}/day</b> (-${fmt(diff)}/day).`;
     } else {
       const bufferShare = Math.round((amountVal * bufferPercent) / 100);
@@ -1141,7 +1141,7 @@
         try {
           appState = await api(`/transactions/${id}/classification`, 'PATCH', { classification: nextIntent });
           renderCurrentView();
-          Motion.toast(`Switched to ${nextIntent === 'want' ? '✨ You Want' : '🛡️ You Need'}`);
+          Motion.toast(`Switched to ${nextIntent === 'want' ? 'You Want' : 'You Need'}`);
         } catch (err) {
           console.error('Error toggling classification:', err);
         }
@@ -1181,110 +1181,38 @@
       }
     });
 
-    // API Key Settings Modal
-    const apiKeyModal = $('apiKeyModal');
-    const openApiKeyBtn = $('apiKeySettingsBtn');
-    const closeApiKeyBtn = $('closeApiKeyModalBtn');
-    const saveApiKeyBtn = $('saveApiKeyBtn');
-    const clearApiKeyBtn = $('clearApiKeyBtn');
-    const apiKeyInput = $('apiKeyInput');
-    const aiProviderSelect = $('aiProviderSelect');
-    const toggleKeyVisBtn = $('toggleApiKeyVisibility');
-    const keyBadge = $('apiKeyStatusBadge');
-
-    async function loadApiKeyStatus() {
+    // Live Realistic Demo Dataset Loader
+    async function loadDemoDataset() {
       try {
-        const config = await api('/ai-config');
-        if (config && config.configured) {
-          if (keyBadge) {
-            keyBadge.textContent = `🟢 ${config.provider.toUpperCase()} Connected`;
-            keyBadge.className = 'status-pill ok';
-          }
-          if (apiKeyInput) apiKeyInput.placeholder = `Configured: ${config.preview}`;
-          if (aiProviderSelect) aiProviderSelect.value = config.provider || 'gemini';
+        Motion.toast('Loading live realistic tracking data…');
+        const res = await fetch('/api/reset-sample', { method: 'POST' });
+        const data = await res.json();
+        if (data && data.success) {
+          await refreshState();
+          Motion.toast('Loaded live demo data: ₹9,900 income, 13 expenses & active analytics');
+          Motion.haptic(20);
         } else {
-          if (keyBadge) {
-            keyBadge.textContent = 'Offline Engine';
-            keyBadge.className = 'status-pill warn';
-          }
-          if (apiKeyInput) apiKeyInput.placeholder = 'Paste your API key here (AIzaSy...)';
+          throw new Error(data.error || 'Failed to load demo data');
         }
-      } catch (e) {
-        console.warn('Could not load AI config:', e);
+      } catch (err) {
+        Motion.toast('Error loading demo data: ' + err.message);
       }
     }
 
-    if (openApiKeyBtn && apiKeyModal) {
-      openApiKeyBtn.addEventListener('click', () => {
-        loadApiKeyStatus();
-        apiKeyModal.showModal();
-        Motion.haptic(10);
+    const demoDataToggleBtn = $('demoDataToggleBtn');
+    if (demoDataToggleBtn) {
+      demoDataToggleBtn.addEventListener('click', () => {
+        if (confirm('Load realistic demo tracking data? This populates income, 14 days of categorized expenses, bills, and live runway analytics.')) {
+          loadDemoDataset();
+        }
       });
+    }
 
-      if (closeApiKeyBtn) {
-        closeApiKeyBtn.addEventListener('click', () => apiKeyModal.close());
-      }
-
-      apiKeyModal.addEventListener('click', (e) => {
-        if (e.target === apiKeyModal) apiKeyModal.close();
+    const loadDemoBannerBtn = $('loadDemoBannerBtn');
+    if (loadDemoBannerBtn) {
+      loadDemoBannerBtn.addEventListener('click', () => {
+        loadDemoDataset();
       });
-
-      if (toggleKeyVisBtn && apiKeyInput) {
-        toggleKeyVisBtn.addEventListener('click', () => {
-          const isPass = apiKeyInput.type === 'password';
-          apiKeyInput.type = isPass ? 'text' : 'password';
-          toggleKeyVisBtn.textContent = isPass ? 'Hide' : 'Show';
-        });
-      }
-
-      if (saveApiKeyBtn && apiKeyInput) {
-        saveApiKeyBtn.addEventListener('click', async () => {
-          const key = apiKeyInput.value.trim();
-          const provider = aiProviderSelect.value;
-          if (!key) {
-            Motion.toast('Please paste a key or click Clear');
-            return;
-          }
-
-          saveApiKeyBtn.disabled = true;
-          saveApiKeyBtn.textContent = 'Connecting…';
-
-          try {
-            const res = await fetch('/api/ai-config', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ apiKey: key, provider })
-            });
-            const data = await res.json();
-            if (!data.success) throw new Error(data.error || 'Connection failed');
-
-            Motion.toast(data.message || 'AI API Key connected!');
-            apiKeyInput.value = '';
-            apiKeyModal.close();
-            loadApiKeyStatus();
-          } catch (err) {
-            Motion.toast(err.message || 'Connection error. Check key.');
-          } finally {
-            saveApiKeyBtn.disabled = false;
-            saveApiKeyBtn.textContent = 'Save & Connect';
-          }
-        });
-      }
-
-      if (clearApiKeyBtn) {
-        clearApiKeyBtn.addEventListener('click', async () => {
-          if (confirm('Disconnect AI key and switch to offline financial engine?')) {
-            try {
-              await api('/ai-config', 'POST', { apiKey: '' });
-              if (apiKeyInput) apiKeyInput.value = '';
-              Motion.toast('AI key cleared. Switched to offline engine.');
-              loadApiKeyStatus();
-            } catch (e) {
-              console.error(e);
-            }
-          }
-        });
-      }
     }
 
     // Listen for hash change for browser back/forward buttons
@@ -1419,8 +1347,8 @@
     if (billsEl) billsEl.textContent = fmt(billAmt);
     if (bufferEl) bufferEl.textContent = fmt(bufferAmt);
     if (horizonEl) horizonEl.textContent = `${horizon} days`;
-    if (styleTagEl) styleTagEl.textContent = `⚖️ ${obState.budgetStyle}`;
-    if (goalTagEl) goalTagEl.textContent = `🎯 ${obState.primaryGoal}`;
+    if (styleTagEl) styleTagEl.textContent = `Rule: ${obState.budgetStyle}`;
+    if (goalTagEl) goalTagEl.textContent = `Goal: ${obState.primaryGoal}`;
     if (goalTargetEl) goalTargetEl.textContent = fmt(bufferAmt);
   }
 
@@ -1850,6 +1778,31 @@
     const logoutBtn = $('logoutBtn');
     const topbarLogoutBtn = $('topbarLogoutBtn');
 
+    function hideAuthError() {
+      if (loginError) {
+        loginError.classList.remove('visible');
+        loginError.hidden = true;
+        loginError.style.display = 'none';
+      }
+      if (loginErrorMsg) loginErrorMsg.textContent = '';
+    }
+
+    function showAuthError(message) {
+      if (loginError) {
+        loginError.classList.add('visible');
+        loginError.hidden = false;
+        loginError.style.display = 'flex';
+      }
+      if (loginErrorMsg) loginErrorMsg.textContent = message || 'Invalid email or password.';
+    }
+
+    // Reset error banner state initially
+    hideAuthError();
+
+    // Auto-clear error when user modifies either field
+    if (loginEmail) loginEmail.addEventListener('input', hideAuthError);
+    if (loginPassword) loginPassword.addEventListener('input', hideAuthError);
+
     // Forgot password hint
     if (forgotPwLink) {
       forgotPwLink.addEventListener('click', (e) => {
@@ -1878,10 +1831,7 @@
         const password = loginPassword?.value || '';
 
         if (!email || !password) {
-          if (loginError) {
-            loginError.style.display = 'flex';
-            if (loginErrorMsg) loginErrorMsg.textContent = 'Please provide both email and password.';
-          }
+          showAuthError('Please provide both email and password.');
           return;
         }
 
@@ -1920,7 +1870,7 @@
 
           if (authSuccess && userData) {
             setStoredAuth(userData);
-            if (loginError) loginError.style.display = 'none';
+            hideAuthError();
             updateAuthUI(userData);
             Motion.toast(`Welcome back, ${userData.email}!`);
             Motion.haptic(20);
@@ -1932,10 +1882,7 @@
             }
           }
         } catch (err) {
-          if (loginError) {
-            loginError.style.display = 'flex';
-            if (loginErrorMsg) loginErrorMsg.textContent = err.message || 'Invalid email or password.';
-          }
+          showAuthError(err.message || 'Invalid email or password.');
           Motion.haptic(50);
         } finally {
           if (loginSubmitBtn) {
