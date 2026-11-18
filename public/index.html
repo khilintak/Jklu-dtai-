@@ -5,21 +5,509 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="description" content="TRACE — Precision Money Manager. Safe daily spend, buffer shield, and budget discipline.">
   <title>TRACE — Precision Money Manager</title>
+  <link rel="icon" type="image/png" href="/images/logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-  <div class="pc-app-layout">
+  <!-- ==========================================
+       LOGIN VIEW (PC Desktop Authentication)
+       ========================================== -->
+  <div class="login-viewport" id="loginView">
+    <!-- Topbar controls (Theme toggle) -->
+    <header class="login-topbar">
+      <div class="login-brand-mini">
+        <img src="/images/logo.png" alt="TRACE Logo" class="brand-logo-img mini">
+        <span class="brand-title">TRACE</span>
+      </div>
+      <button type="button" class="topbar-icon-btn" id="loginThemeBtn" data-action="toggle-theme" title="Toggle Theme" aria-label="Toggle Theme">
+        <span class="theme-btn-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </span>
+      </button>
+    </header>
+
+    <main class="login-container">
+      <div class="card login-card">
+        <!-- Brand Header -->
+        <div class="login-header">
+          <div class="login-logo-hero">
+            <img src="/images/logo.png" alt="TRACE Logo" class="login-hero-img">
+          </div>
+          <h1 class="login-title">Sign in to TRACE</h1>
+          <p class="login-subtitle">Enter your account credentials to access your financial dashboard.</p>
+        </div>
+
+        <!-- Form Error Banner -->
+        <div class="login-error-banner" id="loginError" style="display: none;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          <span id="loginErrorMsg">Invalid email or password. Please try again.</span>
+        </div>
+
+        <!-- Login Form -->
+        <form class="login-form" id="loginForm" novalidate>
+          <div class="form-group">
+            <label for="loginEmail" class="form-label">Email Address</label>
+            <div class="input-with-icon">
+              <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                <polyline points="22,6 12,13 2,6"/>
+              </svg>
+              <input type="email" id="loginEmail" class="form-input" placeholder="name@company.com" autocomplete="username" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="label-with-hint">
+              <label for="loginPassword" class="form-label">Password</label>
+            </div>
+            <div class="input-with-icon">
+              <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+              </svg>
+              <input type="password" id="loginPassword" class="form-input" placeholder="Enter your password" autocomplete="current-password" required>
+              <button type="button" class="btn-toggle-pw" id="togglePasswordBtn" title="Toggle password visibility" aria-label="Toggle password visibility">
+                <svg id="pwEyeIcon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="login-options-row">
+            <label class="remember-me-label">
+              <input type="checkbox" id="rememberMeCheckbox" checked>
+              <span>Remember this device</span>
+            </label>
+            <a href="#" class="forgot-pw-link" id="forgotPwLink">Forgot password?</a>
+          </div>
+
+          <button type="submit" class="btn-primary login-submit-btn" id="loginSubmitBtn">
+            <span>Sign In</span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"/>
+              <polyline points="12 5 19 12 12 19"/>
+            </svg>
+          </button>
+
+          <button type="button" class="btn-ghost-sm" id="directOnboardingBtn" style="margin-top: 12px; width: 100%; border: 1px dashed var(--border-subtle); padding: 9px; font-size: 12px; color: var(--color-brand); font-weight: 600;">
+            ⚡ Start 8-Question Setup Wizard →
+          </button>
+        </form>
+
+        <div class="login-footer">
+          <span>Protected by 256-bit secure session encryption &bull; TRACE</span>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ==========================================
+       ONBOARDING WIZARD (Personalized Calibration)
+       ========================================== -->
+  <div class="onboarding-viewport" id="onboardingView" style="display: none;">
+    <!-- Topbar controls (Logo, Theme toggle, Skip) -->
+    <header class="onboarding-topbar">
+      <div class="onboarding-brand">
+        <img src="/images/logo.png" alt="TRACE Logo" class="brand-logo-img mini">
+        <span class="brand-title">TRACE</span>
+        <span class="onboarding-badge">Personalized Setup</span>
+      </div>
+      <div class="topbar-right">
+        <button type="button" class="btn-ghost-sm" id="skipOnboardingBtn">Skip to Dashboard</button>
+        <button type="button" class="topbar-icon-btn" id="onboardingThemeBtn" data-action="toggle-theme" title="Toggle Theme" aria-label="Toggle Theme">
+          <span class="theme-btn-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          </span>
+        </button>
+      </div>
+    </header>
+
+    <main class="onboarding-container">
+      <div class="card onboarding-card">
+        <!-- Progress Bar & Indicator -->
+        <div class="onboarding-progress-header">
+          <div class="onboarding-step-label">
+            <span id="onboardingStepIndicator">Step 1 of 8</span>
+            <span class="onboarding-step-category" id="onboardingStepCategory">Current Funds</span>
+          </div>
+          <div class="onboarding-progress-track">
+            <div class="onboarding-progress-fill" id="onboardingProgressFill" style="width: 12.5%;"></div>
+          </div>
+        </div>
+
+        <!-- Question 1: Current Funds -->
+        <div class="onboarding-step-content" id="onboardingStep1">
+          <div class="onboarding-header">
+            <div class="onboarding-icon-pill">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="4"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+            </div>
+            <h2 class="onboarding-title">How much money do you currently have?</h2>
+            <p class="onboarding-desc">Total up your bank account, UPI wallets (GPay, PhonePe, Paytm), and physical cash.</p>
+          </div>
+
+          <div class="onboarding-input-wrap">
+            <span class="currency-prefix">₹</span>
+            <input type="text" id="obBalanceInput" class="onboarding-amount-input" inputmode="numeric" placeholder="5,000" value="5000" autocomplete="off">
+          </div>
+
+          <div class="onboarding-preset-chips">
+            <button type="button" class="ob-chip" data-val="2000">₹2,000</button>
+            <button type="button" class="ob-chip active" data-val="5000">₹5,000</button>
+            <button type="button" class="ob-chip" data-val="10000">₹10,000</button>
+            <button type="button" class="ob-chip" data-val="25000">₹25,000</button>
+            <button type="button" class="ob-chip" data-val="50000">₹50,000</button>
+          </div>
+        </div>
+
+        <!-- Question 2: Primary Income Source -->
+        <div class="onboarding-step-content" id="onboardingStep2" style="display: none;">
+          <div class="onboarding-header">
+            <div class="onboarding-icon-pill">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <h2 class="onboarding-title">Where does your money primarily come from?</h2>
+            <p class="onboarding-desc">This tells TRACE whether your cash flow is steady or arrives in unpredictable bursts.</p>
+          </div>
+
+          <div class="onboarding-card-grid-2x2">
+            <div class="ob-select-card-detailed active" data-income-source="Pocket Money">
+              <div class="ob-card-badge">Family Support</div>
+              <span class="ob-card-title">👨‍👩‍👧 Pocket Money / Allowance</span>
+              <span class="ob-card-sub">Regular or ad-hoc support from parents or guardians</span>
+            </div>
+            <div class="ob-select-card-detailed" data-income-source="Stipend / Salary">
+              <div class="ob-card-badge">Fixed Inflow</div>
+              <span class="ob-card-title">💼 Stipend or Salary</span>
+              <span class="ob-card-sub">Fixed monthly pay from an internship or campus job</span>
+            </div>
+            <div class="ob-select-card-detailed" data-income-source="Freelance & Gigs">
+              <div class="ob-card-badge">Variable Gigs</div>
+              <span class="ob-card-title">💻 Freelance & Side Gigs</span>
+              <span class="ob-card-sub">Variable earnings from client work, design, or coding</span>
+            </div>
+            <div class="ob-select-card-detailed" data-income-source="Scholarship / Grant">
+              <div class="ob-card-badge">Academic</div>
+              <span class="ob-card-title">🎓 Scholarship or Grant</span>
+              <span class="ob-card-sub">Disbursements from academic grants, aid, or awards</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Question 3: Horizon / Next Money -->
+        <div class="onboarding-step-content" id="onboardingStep3" style="display: none;">
+          <div class="onboarding-header">
+            <div class="onboarding-icon-pill">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            </div>
+            <h2 class="onboarding-title">When do you expect your next money arrival?</h2>
+            <p class="onboarding-desc">We spread your allowance evenly across these days so you don't go broke early.</p>
+          </div>
+
+          <div class="onboarding-card-grid">
+            <div class="ob-select-card active" data-days="15">
+              <div class="ob-card-badge">Most Popular</div>
+              <span class="ob-card-title">15 Days</span>
+              <span class="ob-card-sub">Twice a month</span>
+            </div>
+            <div class="ob-select-card" data-days="30">
+              <div class="ob-card-badge">Monthly</div>
+              <span class="ob-card-title">30 Days</span>
+              <span class="ob-card-sub">Monthly allowance</span>
+            </div>
+            <div class="ob-select-card" data-days="7">
+              <div class="ob-card-badge">Weekly</div>
+              <span class="ob-card-title">7 Days</span>
+              <span class="ob-card-sub">Short sprint</span>
+            </div>
+          </div>
+
+          <div class="onboarding-custom-row">
+            <span class="custom-label">Or exact days:</span>
+            <input type="number" id="obCustomDaysInput" class="form-input custom-days-field" min="1" max="90" placeholder="e.g. 14">
+          </div>
+        </div>
+
+        <!-- Question 4: Top Spending Categories -->
+        <div class="onboarding-step-content" id="onboardingStep4" style="display: none;">
+          <div class="onboarding-header">
+            <div class="onboarding-icon-pill">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+            </div>
+            <h2 class="onboarding-title">Where does most of your money usually go?</h2>
+            <p class="onboarding-desc">Select 2 to 3 main lifestyle areas so your AI Advisor can catch budget leaks.</p>
+          </div>
+
+          <div class="onboarding-card-grid-2x2">
+            <div class="ob-multi-card active" data-cat="Food">
+              <div class="ob-multi-card-content">
+                <span class="ob-multi-card-icon">🍔</span>
+                <div class="ob-multi-card-text">
+                  <span class="ob-multi-card-title">Canteen & Delivery</span>
+                  <span class="ob-multi-card-sub">Cafeteria, Zomato, Swiggy</span>
+                </div>
+              </div>
+              <div class="ob-check-indicator">✓</div>
+            </div>
+
+            <div class="ob-multi-card active" data-cat="Transport">
+              <div class="ob-multi-card-content">
+                <span class="ob-multi-card-icon">🚇</span>
+                <div class="ob-multi-card-text">
+                  <span class="ob-multi-card-title">Transit & Commute</span>
+                  <span class="ob-multi-card-sub">Metro, auto, cab, petrol</span>
+                </div>
+              </div>
+              <div class="ob-check-indicator">✓</div>
+            </div>
+
+            <div class="ob-multi-card" data-cat="Shopping">
+              <div class="ob-multi-card-content">
+                <span class="ob-multi-card-icon">🛍️</span>
+                <div class="ob-multi-card-text">
+                  <span class="ob-multi-card-title">Shopping & Leisure</span>
+                  <span class="ob-multi-card-sub">Clothes, electronics, gear</span>
+                </div>
+              </div>
+              <div class="ob-check-indicator">✓</div>
+            </div>
+
+            <div class="ob-multi-card" data-cat="Bills">
+              <div class="ob-multi-card-content">
+                <span class="ob-multi-card-icon">📱</span>
+                <div class="ob-multi-card-text">
+                  <span class="ob-multi-card-title">Subscriptions & Tech</span>
+                  <span class="ob-multi-card-sub">OTT, Spotify, cloud, recharge</span>
+                </div>
+              </div>
+              <div class="ob-check-indicator">✓</div>
+            </div>
+
+            <div class="ob-multi-card" data-cat="Study">
+              <div class="ob-multi-card-content">
+                <span class="ob-multi-card-icon">📚</span>
+                <div class="ob-multi-card-text">
+                  <span class="ob-multi-card-title">Study & Academics</span>
+                  <span class="ob-multi-card-sub">Textbooks, courses, printing</span>
+                </div>
+              </div>
+              <div class="ob-check-indicator">✓</div>
+            </div>
+
+            <div class="ob-multi-card" data-cat="Fun">
+              <div class="ob-multi-card-content">
+                <span class="ob-multi-card-icon">☕</span>
+                <div class="ob-multi-card-text">
+                  <span class="ob-multi-card-title">Cafes & Hangouts</span>
+                  <span class="ob-multi-card-sub">Coffee, evening snacks, outings</span>
+                </div>
+              </div>
+              <div class="ob-check-indicator">✓</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Question 5: Fixed Recurring Bills -->
+        <div class="onboarding-step-content" id="onboardingStep5" style="display: none;">
+          <div class="onboarding-header">
+            <div class="onboarding-icon-pill">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            </div>
+            <h2 class="onboarding-title">Any fixed bills due before then?</h2>
+            <p class="onboarding-desc">We set this money aside upfront so your daily spending limit stays 100% safe.</p>
+          </div>
+
+          <div class="ob-bills-container">
+            <!-- Preset Quick-Fill Chips -->
+            <div class="ob-quick-bill-chips">
+              <button type="button" class="ob-quick-bill-btn" data-preset-name="Hostel Rent" data-preset-amount="3000" data-preset-days="10">+ 🏠 Hostel Rent (₹3k)</button>
+              <button type="button" class="ob-quick-bill-btn" data-preset-name="Mobile / Wi-Fi" data-preset-amount="499" data-preset-days="7">+ 📶 Recharge (₹499)</button>
+              <button type="button" class="ob-quick-bill-btn" data-preset-name="Mess Card" data-preset-amount="2500" data-preset-days="5">+ 🍱 Mess Fee (₹2.5k)</button>
+              <button type="button" class="ob-quick-bill-btn" data-preset-name="OTT Subscriptions" data-preset-amount="299" data-preset-days="12">+ 📺 OTT Subs (₹299)</button>
+            </div>
+
+            <label class="ob-checkbox-banner">
+              <input type="checkbox" id="obNoBillsCheckbox" checked>
+              <span>No bills due right now (all clear)</span>
+            </label>
+
+            <div class="ob-bill-form" id="obBillForm" style="display: none;">
+              <div class="form-group">
+                <label class="form-label">Bill Name</label>
+                <input type="text" id="obBillName" class="form-input" placeholder="e.g. Mobile Recharge, Wi-Fi, Mess Fee">
+              </div>
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label class="form-label">Amount (₹)</label>
+                  <input type="text" id="obBillAmount" class="form-input" inputmode="numeric" placeholder="499">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Due In (Days)</label>
+                  <input type="number" id="obBillDays" class="form-input" min="1" max="60" placeholder="5" value="5">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Question 6: Spending Discipline & Budget Style -->
+        <div class="onboarding-step-content" id="onboardingStep6" style="display: none;">
+          <div class="onboarding-header">
+            <div class="onboarding-icon-pill">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/></svg>
+            </div>
+            <h2 class="onboarding-title">What budgeting discipline fits you best?</h2>
+            <p class="onboarding-desc">Choose how strictly TRACE should guide your Needs vs. Wants balance.</p>
+          </div>
+
+          <div class="onboarding-card-grid-vertical">
+            <div class="ob-select-card-detailed active" data-budget-style="Balanced 50/30/20">
+              <div class="ob-card-badge">Recommended Standard</div>
+              <span class="ob-card-title">⚖️ Balanced Discipline (50 / 30 / 20)</span>
+              <span class="ob-card-sub">50% Essential Needs • 30% Leisure Wants • 20% Savings. Ideal balance of lifestyle and steady cushion growth.</span>
+            </div>
+            <div class="ob-select-card-detailed" data-budget-style="Frugal 60/15/25">
+              <div class="ob-card-badge">Maximum Savings</div>
+              <span class="ob-card-title">🛡️ Frugal Fortress (60 / 15 / 25)</span>
+              <span class="ob-card-sub">60% Essential Needs • 15% Leisure Wants • 25% Heavy Savings. Built for tight budgets and aggressive cash accumulation.</span>
+            </div>
+            <div class="ob-select-card-detailed" data-budget-style="Flexible 45/40/15">
+              <div class="ob-card-badge">Social Lifestyle</div>
+              <span class="ob-card-title">🌴 Flexible Lifestyle (45 / 40 / 15)</span>
+              <span class="ob-card-sub">45% Essential Needs • 40% Leisure Wants • 15% Light Savings. Extra room for dining out, weekend trips, and leisure.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Question 7: Safety Cushion -->
+        <div class="onboarding-step-content" id="onboardingStep7" style="display: none;">
+          <div class="onboarding-header">
+            <div class="onboarding-icon-pill">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <h2 class="onboarding-title">How much emergency cushion to keep?</h2>
+            <p class="onboarding-desc">This reserve is shielded away from your daily allowance for unexpected expenses.</p>
+          </div>
+
+          <div class="onboarding-card-grid">
+            <div class="ob-select-card" data-buffer-pct="10">
+              <div class="ob-card-badge">Light</div>
+              <span class="ob-card-title">10%</span>
+              <span class="ob-card-sub">Max spending</span>
+            </div>
+            <div class="ob-select-card active" data-buffer-pct="20">
+              <div class="ob-card-badge">Recommended</div>
+              <span class="ob-card-title">20%</span>
+              <span class="ob-card-sub">Balanced safety</span>
+            </div>
+            <div class="ob-select-card" data-buffer-pct="30">
+              <div class="ob-card-badge">Strict</div>
+              <span class="ob-card-title">30%</span>
+              <span class="ob-card-sub">Max savings</span>
+            </div>
+          </div>
+
+          <div class="onboarding-custom-row" style="margin-top: 14px;">
+            <span class="custom-label">Target buffer goal:</span>
+            <span id="obBufferGoalDisplay" style="font-weight: 700; color: var(--color-brand);">₹1,000</span>
+            <span style="font-size: 11px; color: var(--ink-tertiary);">(Auto-calculated from your funds)</span>
+          </div>
+        </div>
+
+        <!-- Question 8: Primary Goal & Live Review -->
+        <div class="onboarding-step-content" id="onboardingStep8" style="display: none;">
+          <div class="onboarding-header">
+            <div class="onboarding-icon-pill">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+            </div>
+            <h2 class="onboarding-title">What is your #1 financial priority right now?</h2>
+            <p class="onboarding-desc">Your AI Advisor will tune its daily prompts, warnings, and nudges around this goal.</p>
+          </div>
+
+          <div class="onboarding-card-grid-2x2">
+            <div class="ob-select-card-detailed active" data-goal="Never Go Broke">
+              <div class="ob-card-badge">Priority 1</div>
+              <span class="ob-card-title">🛑 Never Go Broke Early</span>
+              <span class="ob-card-sub">Eliminate month-end panic and make your money last the full cycle</span>
+            </div>
+            <div class="ob-select-card-detailed" data-goal="Save for Big Purchase">
+              <div class="ob-card-badge">Specific Target</div>
+              <span class="ob-card-title">🎯 Save For A Big Purchase</span>
+              <span class="ob-card-sub">Save up for a laptop, new phone, road trip, or gadget</span>
+            </div>
+            <div class="ob-select-card-detailed" data-goal="Build Emergency Fund">
+              <div class="ob-card-badge">Safety Net</div>
+              <span class="ob-card-title">🛡️ Build An Emergency Shield</span>
+              <span class="ob-card-sub">Hit ₹5,000 to ₹10,000 in untouchable liquid reserves</span>
+            </div>
+            <div class="ob-select-card-detailed" data-goal="Track Every Rupee">
+              <div class="ob-card-badge">Daily Habit</div>
+              <span class="ob-card-title">📊 Track Every Single Rupee</span>
+              <span class="ob-card-sub">Zero mystery spending, full discipline and transaction awareness</span>
+            </div>
+          </div>
+
+          <!-- Live Summary Preview Card -->
+          <div class="ob-summary-preview" id="obSummaryPreview">
+            <div class="preview-header">Your Calibrated Daily Allowance</div>
+            <div class="preview-main-stat">
+              <span class="preview-currency">₹</span>
+              <span class="preview-stat-val" id="obPreviewDaily">266</span>
+              <span class="preview-unit">/ day</span>
+            </div>
+            <div class="preview-breakdown">
+              <div class="breakdown-item">
+                <span class="breakdown-lbl">Current Cash:</span>
+                <span class="breakdown-val" id="obPreviewTotal">₹5,000</span>
+              </div>
+              <div class="breakdown-item">
+                <span class="breakdown-lbl">Fixed Bills:</span>
+                <span class="breakdown-val" id="obPreviewBills">₹0</span>
+              </div>
+              <div class="breakdown-item">
+                <span class="breakdown-lbl">Safety Shield:</span>
+                <span class="breakdown-val" id="obPreviewBuffer">₹1,000</span>
+              </div>
+              <div class="breakdown-item">
+                <span class="breakdown-lbl">Days Horizon:</span>
+                <span class="breakdown-val" id="obPreviewHorizon">15 days</span>
+              </div>
+            </div>
+            <div class="preview-tags-row">
+              <span class="preview-tag-pill" id="obPreviewBudgetStyle">⚖️ Balanced 50/30/20</span>
+              <span class="preview-tag-pill" id="obPreviewGoal">🛑 Never Go Broke</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Onboarding Navigation Buttons -->
+        <div class="onboarding-nav-row">
+          <button type="button" class="btn-secondary" id="obBackBtn" style="visibility: hidden;">
+            ← Back
+          </button>
+          <button type="button" class="btn-primary" id="obNextBtn">
+            <span>Continue</span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div class="pc-app-layout" id="appLayout">
     <!-- Desktop Left Navigation Sidebar (Linear / Stripe SaaS Style) -->
     <aside class="pc-sidebar">
       <div class="sidebar-header">
         <div class="brand-logo-wrap">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="2" y="4" width="20" height="16" rx="4"/>
-            <line x1="2" y1="10" x2="22" y2="10"/>
-          </svg>
+          <img src="/images/logo.png" alt="TRACE Logo" class="brand-logo-img">
         </div>
         <div class="brand-info">
           <span class="brand-title">TRACE</span>
@@ -80,10 +568,32 @@
           </svg>
           <span>AI Advisor</span>
         </a>
+        <a href="#onboarding" class="sidebar-nav-item top-tab" data-tab="onboarding" id="sidebarOnboardingLink">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
+          </svg>
+          <span>Setup Wizard</span>
+        </a>
       </nav>
 
-      <!-- Sidebar Footer (Theme, Settings) -->
+      <!-- Sidebar Footer (User Profile, Theme & Settings) -->
       <div class="sidebar-footer">
+        <div class="sidebar-user-card" id="sidebarUserCard">
+          <div class="user-avatar-badge" id="userAvatarBadge">TU</div>
+          <div class="user-info-text">
+            <span class="user-display-name" id="userDisplayName">Trace User</span>
+            <span class="user-display-email" id="userDisplayEmail">trace@khil.tech</span>
+          </div>
+          <button type="button" class="btn-sidebar-logout" id="logoutBtn" title="Sign Out of TRACE" aria-label="Sign Out">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+              <polyline points="16 17 21 12 16 7"/>
+              <line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+          </button>
+        </div>
+
         <div class="sidebar-footer-row">
           <button type="button" class="sidebar-footer-btn" id="themeToggleBtn" data-action="toggle-theme" title="Toggle Theme">
             <span class="theme-btn-icon">
@@ -122,6 +632,11 @@
         </div>
         <div class="topbar-right">
           <span class="topbar-date" id="headerDate">Today</span>
+          <div class="topbar-user-badge" id="topbarUserBadge">
+            <span class="topbar-user-dot"></span>
+            <span class="topbar-user-email" id="topbarUserEmail">trace@khil.tech</span>
+            <button type="button" class="topbar-logout-btn" id="topbarLogoutBtn" title="Sign Out">Logout</button>
+          </div>
           <button type="button" class="topbar-icon-btn" id="topbarThemeBtn" data-action="toggle-theme" title="Toggle Theme" aria-label="Toggle Theme">
             <span class="theme-btn-icon">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -157,6 +672,17 @@
              VIEW 1: OVERVIEW / DASHBOARD (PC Layout)
              ========================================== -->
         <section class="view-section" id="view-overview">
+          <!-- Uncalibrated Setup Banner -->
+          <div class="uncalibrated-banner" id="uncalibratedBanner" style="display: none;">
+            <div class="uncalibrated-banner-left">
+              <span class="uncalibrated-badge">Setup Needed</span>
+              <div class="uncalibrated-banner-text">
+                <strong>Your TRACE account is at ₹0.</strong> Complete the 8-question setup walkthrough to calculate your safe daily spending allowance.
+              </div>
+            </div>
+            <button type="button" class="btn-primary" id="launchSetupBannerBtn" style="padding: 8px 16px; font-size: 12.5px; white-space: nowrap;">Start Setup Wizard →</button>
+          </div>
+
           <!-- 4-Card Desktop KPI Banner -->
           <div class="kpi-banner-grid">
             <!-- Focal Card: Safe Spend Today -->
@@ -462,6 +988,19 @@
                     <button type="button" class="btn-secondary" id="setBufferGoalBtn">Update Target</button>
                   </div>
                 </div>
+              </div>
+
+              <!-- Setup Calibration Wizard Trigger -->
+              <div class="card" style="margin-top: 14px;">
+                <div class="card-header">
+                  <div class="card-title-group">
+                    <h2 class="card-title">Setup Calibration Wizard</h2>
+                    <span class="card-subtitle">Re-run the initial 4-step question walkthrough anytime</span>
+                  </div>
+                </div>
+                <button type="button" class="btn-secondary" id="recalibrateSetupBtn" style="width: 100%; margin-top: 6px;">
+                  Launch Setup Wizard →
+                </button>
               </div>
             </div>
 

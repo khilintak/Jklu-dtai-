@@ -612,7 +612,21 @@ function calculateState() {
       totalIncome,
       totalExpense,
       statusBadge,
-      statusMessage
+      statusMessage,
+      isOnboarded: transactions.length > 0 || getSetting('income_source', null) !== null
+    },
+    profile: {
+      incomeSource: getSetting('income_source', null),
+      primaryGoal: getSetting('primary_goal', null),
+      budgetStyle: getSetting('budget_style', null),
+      topCategories: (() => {
+        try {
+          const raw = getSetting('top_categories', null);
+          return raw ? JSON.parse(raw) : [];
+        } catch (e) {
+          return [];
+        }
+      })()
     },
     analytics: {
       last7Days,
@@ -648,6 +662,39 @@ const upload = multer({
 });
 
 // REST API Routes
+
+// 0. Registered Authentication
+const REGISTERED_USER = {
+  email: 'trace@khil.tech',
+  password: '123456787654321',
+  name: 'Trace User'
+};
+
+app.post('/api/auth/login', (req, res) => {
+  const { email, password } = req.body || {};
+  if (!email || !password) {
+    return res.status(400).json({ success: false, error: 'Email and password are required.' });
+  }
+  if (email.trim().toLowerCase() === REGISTERED_USER.email.toLowerCase() && password === REGISTERED_USER.password) {
+    return res.json({
+      success: true,
+      user: {
+        email: REGISTERED_USER.email,
+        name: REGISTERED_USER.name,
+        avatar: 'TU'
+      },
+      token: 'trace_auth_' + Buffer.from(email + ':' + Date.now()).toString('base64')
+    });
+  }
+  return res.status(401).json({ success: false, error: 'Invalid email or password.' });
+});
+
+app.get('/api/auth/me', (req, res) => {
+  res.json({
+    success: true,
+    registeredEmail: REGISTERED_USER.email
+  });
+});
 
 // 1. Get complete dashboard state
 app.get('/api/state', (req, res) => {
@@ -822,7 +869,7 @@ app.delete('/api/bills/:id', (req, res) => {
 // 7. Update plan settings
 app.put('/api/plan', (req, res) => {
   try {
-    const { nextDays, pct, goal, clearNextDay } = req.body;
+    const { nextDays, pct, goal, clearNextDay, incomeSource, primaryGoal, budgetStyle, topCategories } = req.body;
     const T = getDayNumber();
 
     if (clearNextDay) {
@@ -844,9 +891,23 @@ app.put('/api/plan', (req, res) => {
 
     if (goal !== undefined) {
       const numGoal = parseFloat(goal);
-      if (!isNaN(numGoal) && numGoal > 0) {
+      if (!isNaN(numGoal) && numGoal >= 0) {
         setSetting('goal', numGoal);
       }
+    }
+
+    if (incomeSource !== undefined) {
+      setSetting('income_source', String(incomeSource).trim());
+    }
+    if (primaryGoal !== undefined) {
+      setSetting('primary_goal', String(primaryGoal).trim());
+    }
+    if (budgetStyle !== undefined) {
+      setSetting('budget_style', String(budgetStyle).trim());
+    }
+    if (topCategories !== undefined) {
+      const catVal = Array.isArray(topCategories) ? JSON.stringify(topCategories) : String(topCategories);
+      setSetting('top_categories', catVal);
     }
 
     const updatedState = calculateState();
@@ -1015,6 +1076,9 @@ Never scold or judge. Emphasize their daily safe-to-spend limit, buffer safety, 
 Give no formal investment, credit, or loan advice. Base answers on their real numbers below:
 
 STUDENT'S LIVE FINANCIAL DATA:
+• Income Source: ${state.profile.incomeSource || 'Allowance'}
+• Primary Goal: ${state.profile.primaryGoal || 'Avoid running out of money'}
+• Budget Discipline: ${state.profile.budgetStyle || 'Balanced 50/30/20'}
 • Total Balance: ₹${state.financials.balance.toLocaleString('en-IN')}
 • Safety Buffer: ₹${state.financials.buffer.toLocaleString('en-IN')} (Goal: ₹${state.financials.bufferGoal.toLocaleString('en-IN')})
 • Upcoming Bills Due: ₹${state.financials.billsDue.toLocaleString('en-IN')}
@@ -1231,6 +1295,12 @@ app.post('/api/clear-all', (req, res) => {
     db.exec('DELETE FROM bills;');
     db.exec('DELETE FROM chat_history;');
     setSetting('nextDay', null);
+    setSetting('goal', 0);
+    setSetting('pct', 20);
+    setSetting('income_source', null);
+    setSetting('primary_goal', null);
+    setSetting('budget_style', null);
+    setSetting('top_categories', null);
     const state = calculateState();
     res.json({ success: true, data: state });
   } catch (err) {

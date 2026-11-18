@@ -119,7 +119,7 @@
     if (document.body) document.body.setAttribute('data-theme', valid);
     try {
       localStorage.setItem('trace-theme', valid);
-    } catch (e) {}
+    } catch (e) { }
 
     const iconSvg = valid === 'dark' ? THEME_SUN_ICON : THEME_MOON_ICON;
     const titleText = valid === 'dark' ? 'Switch to Light theme' : 'Switch to Dark theme';
@@ -142,6 +142,18 @@
 
   // Route & View Switching
   function switchTab(tabName) {
+    if (tabName === 'onboarding' || tabName === 'setup') {
+      const onboardingView = $('onboardingView');
+      const appLayout = $('appLayout');
+      const loginView = $('loginView');
+      if (onboardingView) onboardingView.style.display = 'flex';
+      if (appLayout) appLayout.style.display = 'none';
+      if (loginView) loginView.style.display = 'none';
+      goToObStep(1);
+      history.replaceState(null, '', '#onboarding');
+      return;
+    }
+
     const validTabs = ['overview', 'add', 'plan', 'insights', 'ask'];
     if (!validTabs.includes(tabName)) tabName = 'overview';
     currentTab = tabName;
@@ -195,6 +207,16 @@
   // ==========================================
   function renderOverview() {
     const { financials, analytics, transactions, bills } = appState;
+
+    // Uncalibrated account banner check
+    const uncalibratedBanner = $('uncalibratedBanner');
+    if (uncalibratedBanner) {
+      if (financials.isOnboarded === false || (financials.balance === 0 && financials.totalIncome === 0)) {
+        uncalibratedBanner.style.display = 'flex';
+      } else {
+        uncalibratedBanner.style.display = 'none';
+      }
+    }
 
     // Animate Hero numbers
     const heroSafeAmount = $('heroSafeAmount');
@@ -723,6 +745,36 @@
       }
     });
 
+    // Direct Onboarding Trigger from Login screen
+    const directOnboardingBtn = $('directOnboardingBtn');
+    if (directOnboardingBtn) {
+      directOnboardingBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        setStoredAuth({ email: REGISTERED_CREDENTIALS.email, name: 'Trace User' });
+        try { localStorage.removeItem('trace_onboarded'); } catch (err) { }
+        updateAuthUI({ email: REGISTERED_CREDENTIALS.email, name: 'Trace User' });
+        goToObStep(1);
+        Motion.toast('Setup Wizard opened.');
+        Motion.haptic(10);
+      });
+    }
+
+    // Launch Setup Banner Button from Dashboard
+    const launchSetupBannerBtn = $('launchSetupBannerBtn');
+    if (launchSetupBannerBtn) {
+      launchSetupBannerBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        try { localStorage.removeItem('trace_onboarded'); } catch (err) { }
+        const onboardingView = $('onboardingView');
+        const appLayout = $('appLayout');
+        if (onboardingView) onboardingView.style.display = 'flex';
+        if (appLayout) appLayout.style.display = 'none';
+        goToObStep(1);
+        Motion.toast('Setup Wizard opened.');
+        Motion.haptic(10);
+      });
+    }
+
     // Theme Toggle (Supports all toggle buttons across sidebar, topbar & dialogs)
     $$('[data-action="toggle-theme"], #themeToggleBtn, #topbarThemeBtn').forEach(btn => {
       btn.addEventListener('click', (e) => {
@@ -1244,6 +1296,669 @@
     });
   }
 
+  // ==========================================
+  // Authentication Management
+  // ==========================================
+  const REGISTERED_CREDENTIALS = {
+    email: 'trace@khil.tech',
+    password: '123456787654321'
+  };
+
+  function getStoredAuth() {
+    try {
+      const raw = localStorage.getItem('trace_auth');
+      return raw ? JSON.parse(raw) : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function setStoredAuth(userData) {
+    try {
+      localStorage.setItem('trace_auth', JSON.stringify(userData));
+    } catch (e) { }
+  }
+
+  function clearStoredAuth() {
+    try {
+      localStorage.removeItem('trace_auth');
+    } catch (e) { }
+  }
+
+  function updateAuthUI(user) {
+    const loginView = $('loginView');
+    const appLayout = $('appLayout');
+    const onboardingView = $('onboardingView');
+    const bottomNav = document.querySelector('.bottom-nav');
+
+    // If backend state says not onboarded, remove any stale localStorage flag
+    if (appState && appState.financials && appState.financials.isOnboarded === false) {
+      try { localStorage.removeItem('trace_onboarded'); } catch(e) {}
+    }
+
+    const isHashOnboarding = location.hash === '#onboarding' || location.hash === '#setup';
+    const isCompleted = localStorage.getItem('trace_onboarded') === 'true';
+
+    // Show onboarding if requested via hash OR if not completed yet
+    const shouldShowOnboarding = isHashOnboarding || !isCompleted;
+
+    if (user) {
+      if (loginView) loginView.style.display = 'none';
+
+      if (shouldShowOnboarding) {
+        if (onboardingView) onboardingView.style.display = 'flex';
+        if (appLayout) appLayout.style.display = 'none';
+        if (bottomNav) bottomNav.style.display = 'none';
+        goToObStep(1);
+      } else {
+        if (onboardingView) onboardingView.style.display = 'none';
+        if (appLayout) appLayout.style.display = 'flex';
+        if (bottomNav) bottomNav.style.display = '';
+      }
+
+      // Update user identity in sidebar & topbar
+      const userDisplayEmail = $('userDisplayEmail');
+      if (userDisplayEmail) userDisplayEmail.textContent = user.email || REGISTERED_CREDENTIALS.email;
+      const topbarUserEmail = $('topbarUserEmail');
+      if (topbarUserEmail) topbarUserEmail.textContent = user.email || REGISTERED_CREDENTIALS.email;
+      const userDisplayName = $('userDisplayName');
+      if (userDisplayName) userDisplayName.textContent = user.name || 'Trace User';
+    } else {
+      // If not logged in, but hash requests onboarding, auto-login with registered account
+      if (isHashOnboarding) {
+        const defaultUser = { email: REGISTERED_CREDENTIALS.email, name: 'Trace User' };
+        setStoredAuth(defaultUser);
+        updateAuthUI(defaultUser);
+        return;
+      }
+      if (loginView) loginView.style.display = 'flex';
+      if (onboardingView) onboardingView.style.display = 'none';
+      if (appLayout) appLayout.style.display = 'none';
+      if (bottomNav) bottomNav.style.display = 'none';
+    }
+  }
+
+  // ==========================================
+  // Onboarding Wizard Controller (8 Questions)
+  // ==========================================
+  const obState = {
+    step: 1,
+    balance: 5000,
+    incomeSource: 'Pocket Money',
+    horizon: 15,
+    topCategories: ['Food', 'Transport'],
+    hasBill: false,
+    billName: '',
+    billAmount: 0,
+    billDays: 5,
+    budgetStyle: 'Balanced 50/30/20',
+    bufferPct: 20,
+    primaryGoal: 'Never Go Broke'
+  };
+
+  function updateObSummaryPreview() {
+    const balance = Math.max(0, obState.balance);
+    const horizon = Math.max(1, obState.horizon);
+    const bufferPct = obState.bufferPct;
+    const bufferAmt = Math.round(balance * (bufferPct / 100));
+    const billAmt = (obState.hasBill && obState.billAmount > 0) ? obState.billAmount : 0;
+    const spendable = Math.max(0, balance - bufferAmt - billAmt);
+    const daily = Math.max(0, Math.floor(spendable / horizon));
+
+    const dailyEl = $('obPreviewDaily');
+    const totalEl = $('obPreviewTotal');
+    const billsEl = $('obPreviewBills');
+    const bufferEl = $('obPreviewBuffer');
+    const horizonEl = $('obPreviewHorizon');
+    const styleTagEl = $('obPreviewBudgetStyle');
+    const goalTagEl = $('obPreviewGoal');
+    const goalTargetEl = $('obBufferGoalDisplay');
+
+    if (dailyEl) dailyEl.textContent = daily.toLocaleString('en-IN');
+    if (totalEl) totalEl.textContent = fmt(balance);
+    if (billsEl) billsEl.textContent = fmt(billAmt);
+    if (bufferEl) bufferEl.textContent = fmt(bufferAmt);
+    if (horizonEl) horizonEl.textContent = `${horizon} days`;
+    if (styleTagEl) styleTagEl.textContent = `⚖️ ${obState.budgetStyle}`;
+    if (goalTagEl) goalTagEl.textContent = `🎯 ${obState.primaryGoal}`;
+    if (goalTargetEl) goalTargetEl.textContent = fmt(bufferAmt);
+  }
+
+  function goToObStep(stepNum) {
+    obState.step = Math.max(1, Math.min(8, stepNum));
+
+    // Show/hide all 8 step panels
+    for (let i = 1; i <= 8; i++) {
+      const stepEl = $(`onboardingStep${i}`);
+      if (stepEl) {
+        stepEl.style.display = i === obState.step ? 'block' : 'none';
+      }
+    }
+
+    // Update progress indicator & labels
+    const stepLabels = {
+      1: 'Current Funds',
+      2: 'Income Source',
+      3: 'Time Horizon',
+      4: 'Top Spending',
+      5: 'Fixed Commitments',
+      6: 'Budget Style',
+      7: 'Safety Cushion',
+      8: 'Goal & Calibration'
+    };
+
+    const indicatorEl = $('onboardingStepIndicator');
+    const catEl = $('onboardingStepCategory');
+    const fillEl = $('onboardingProgressFill');
+
+    if (indicatorEl) indicatorEl.textContent = `Step ${obState.step} of 8`;
+    if (catEl) catEl.textContent = stepLabels[obState.step] || '';
+    if (fillEl) fillEl.style.width = `${(obState.step / 8) * 100}%`;
+
+    // Update buttons
+    const backBtn = $('obBackBtn');
+    const nextBtn = $('obNextBtn');
+
+    if (backBtn) {
+      backBtn.style.visibility = obState.step === 1 ? 'hidden' : 'visible';
+    }
+
+    if (nextBtn) {
+      if (obState.step === 8) {
+        nextBtn.innerHTML = `<span>Finish & Launch Dashboard</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>`;
+      } else {
+        nextBtn.innerHTML = `<span>Continue</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="9 18 15 12 9 6"/></svg>`;
+      }
+    }
+
+    updateObSummaryPreview();
+  }
+
+  function setupOnboardingEvents() {
+    const obBalanceInput = $('obBalanceInput');
+    const obCustomDaysInput = $('obCustomDaysInput');
+    const obNoBillsCheckbox = $('obNoBillsCheckbox');
+    const obBillForm = $('obBillForm');
+    const obBillName = $('obBillName');
+    const obBillAmount = $('obBillAmount');
+    const obBillDays = $('obBillDays');
+    const obBackBtn = $('obBackBtn');
+    const obNextBtn = $('obNextBtn');
+    const skipBtn = $('skipOnboardingBtn');
+    const recalibrateBtn = $('recalibrateSetupBtn');
+
+    // Step 1: Preset chips
+    $$('#onboardingStep1 .ob-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        const val = parseFloat(chip.dataset.val) || 0;
+        obState.balance = val;
+        if (obBalanceInput) obBalanceInput.value = val.toLocaleString('en-IN');
+        $$('#onboardingStep1 .ob-chip').forEach(c => c.classList.toggle('active', c === chip));
+        updateObSummaryPreview();
+        Motion.haptic(10);
+      });
+    });
+
+    // Step 1: Balance input
+    if (obBalanceInput) {
+      obBalanceInput.addEventListener('input', (e) => {
+        const raw = e.target.value.replace(/[^\d.]/g, '');
+        const val = parseFloat(raw) || 0;
+        obState.balance = val;
+        $$('#onboardingStep1 .ob-chip').forEach(chip => {
+          chip.classList.toggle('active', parseFloat(chip.dataset.val) === val);
+        });
+        updateObSummaryPreview();
+      });
+      obBalanceInput.addEventListener('blur', (e) => {
+        if (obState.balance > 0) {
+          e.target.value = obState.balance.toLocaleString('en-IN');
+        }
+      });
+    }
+
+    // Step 2: Income Source cards
+    $$('#onboardingStep2 .ob-select-card-detailed').forEach(card => {
+      card.addEventListener('click', () => {
+        const src = card.dataset.incomeSource;
+        if (src) {
+          obState.incomeSource = src;
+          $$('#onboardingStep2 .ob-select-card-detailed').forEach(c => c.classList.toggle('active', c === card));
+          Motion.haptic(10);
+        }
+      });
+    });
+
+    // Step 3: Horizon select cards
+    $$('#onboardingStep3 .ob-select-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const days = parseInt(card.dataset.days, 10);
+        if (days) {
+          obState.horizon = days;
+          $$('#onboardingStep3 .ob-select-card').forEach(c => c.classList.toggle('active', c === card));
+          if (obCustomDaysInput) obCustomDaysInput.value = '';
+          updateObSummaryPreview();
+          Motion.haptic(10);
+        }
+      });
+    });
+
+    // Step 3: Custom days input
+    if (obCustomDaysInput) {
+      obCustomDaysInput.addEventListener('input', (e) => {
+        const days = parseInt(e.target.value, 10);
+        if (days && days > 0) {
+          obState.horizon = days;
+          $$('#onboardingStep3 .ob-select-card').forEach(c => c.classList.remove('active'));
+          updateObSummaryPreview();
+        }
+      });
+    }
+
+    // Step 4: Top Categories multi-select
+    $$('#onboardingStep4 .ob-multi-card').forEach(card => {
+      card.addEventListener('click', () => {
+        card.classList.toggle('active');
+        const activeCards = $$('#onboardingStep4 .ob-multi-card.active');
+        obState.topCategories = Array.from(activeCards).map(c => c.dataset.cat);
+        Motion.haptic(10);
+      });
+    });
+
+    // Step 5: Quick Bill Preset Chips
+    $$('.ob-quick-bill-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const name = btn.dataset.presetName;
+        const amount = parseFloat(btn.dataset.presetAmount) || 0;
+        const days = parseInt(btn.dataset.presetDays, 10) || 5;
+
+        obState.hasBill = true;
+        obState.billName = name;
+        obState.billAmount = amount;
+        obState.billDays = days;
+
+        if (obNoBillsCheckbox) obNoBillsCheckbox.checked = false;
+        if (obBillForm) obBillForm.style.display = 'block';
+        if (obBillName) obBillName.value = name;
+        if (obBillAmount) obBillAmount.value = amount.toLocaleString('en-IN');
+        if (obBillDays) obBillDays.value = days;
+
+        updateObSummaryPreview();
+        Motion.haptic(10);
+      });
+    });
+
+    // Step 5: Bills Checkbox & Form
+    if (obNoBillsCheckbox) {
+      obNoBillsCheckbox.addEventListener('change', (e) => {
+        obState.hasBill = !e.target.checked;
+        if (obBillForm) {
+          obBillForm.style.display = obState.hasBill ? 'block' : 'none';
+        }
+        updateObSummaryPreview();
+        Motion.haptic(10);
+      });
+    }
+
+    if (obBillName) {
+      obBillName.addEventListener('input', (e) => {
+        obState.billName = e.target.value.trim();
+      });
+    }
+
+    if (obBillAmount) {
+      obBillAmount.addEventListener('input', (e) => {
+        const raw = e.target.value.replace(/[^\d.]/g, '');
+        obState.billAmount = parseFloat(raw) || 0;
+        updateObSummaryPreview();
+      });
+    }
+
+    if (obBillDays) {
+      obBillDays.addEventListener('input', (e) => {
+        obState.billDays = parseInt(e.target.value, 10) || 5;
+      });
+    }
+
+    // Step 6: Budget Style selection
+    $$('#onboardingStep6 .ob-select-card-detailed').forEach(card => {
+      card.addEventListener('click', () => {
+        const style = card.dataset.budgetStyle;
+        if (style) {
+          obState.budgetStyle = style;
+          $$('#onboardingStep6 .ob-select-card-detailed').forEach(c => c.classList.toggle('active', c === card));
+          updateObSummaryPreview();
+          Motion.haptic(10);
+        }
+      });
+    });
+
+    // Step 7: Safety Cushion cards
+    $$('#onboardingStep7 .ob-select-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const pct = parseInt(card.dataset.bufferPct, 10);
+        if (pct) {
+          obState.bufferPct = pct;
+          $$('#onboardingStep7 .ob-select-card').forEach(c => c.classList.toggle('active', c === card));
+          updateObSummaryPreview();
+          Motion.haptic(10);
+        }
+      });
+    });
+
+    // Step 8: Primary Goal selection
+    $$('#onboardingStep8 .ob-select-card-detailed').forEach(card => {
+      card.addEventListener('click', () => {
+        const goal = card.dataset.goal;
+        if (goal) {
+          obState.primaryGoal = goal;
+          $$('#onboardingStep8 .ob-select-card-detailed').forEach(c => c.classList.toggle('active', c === card));
+          updateObSummaryPreview();
+          Motion.haptic(10);
+        }
+      });
+    });
+
+    // Navigation: Back button
+    if (obBackBtn) {
+      obBackBtn.addEventListener('click', () => {
+        if (obState.step > 1) {
+          goToObStep(obState.step - 1);
+          Motion.haptic(10);
+        }
+      });
+    }
+
+    // Navigation: Next / Finish button
+    if (obNextBtn) {
+      obNextBtn.addEventListener('click', async () => {
+        if (obState.step === 1) {
+          if (obState.balance <= 0) {
+            Motion.toast('Please enter your starting funds (e.g. ₹5,000)');
+            Motion.haptic(20);
+            return;
+          }
+          goToObStep(2);
+          Motion.haptic(10);
+          return;
+        }
+
+        if (obState.step === 2) {
+          goToObStep(3);
+          Motion.haptic(10);
+          return;
+        }
+
+        if (obState.step === 3) {
+          if (!obState.horizon || obState.horizon < 1) {
+            Motion.toast('Please select how many days until your next money.');
+            Motion.haptic(20);
+            return;
+          }
+          goToObStep(4);
+          Motion.haptic(10);
+          return;
+        }
+
+        if (obState.step === 4) {
+          goToObStep(5);
+          Motion.haptic(10);
+          return;
+        }
+
+        if (obState.step === 5) {
+          if (obState.hasBill && (!obState.billAmount || obState.billAmount <= 0)) {
+            Motion.toast('Please enter your bill amount or select "No bills due".');
+            Motion.haptic(20);
+            return;
+          }
+          goToObStep(6);
+          Motion.haptic(10);
+          return;
+        }
+
+        if (obState.step === 6) {
+          goToObStep(7);
+          Motion.haptic(10);
+          return;
+        }
+
+        if (obState.step === 7) {
+          goToObStep(8);
+          Motion.haptic(10);
+          return;
+        }
+
+        if (obState.step === 8) {
+          // Finish and save setup to backend
+          obNextBtn.disabled = true;
+          obNextBtn.classList.add('loading');
+
+          try {
+            // 1. Save Horizon, Buffer Goal, and Profile to Plan
+            const bufferGoal = Math.round(obState.balance * (obState.bufferPct / 100));
+            await api('/plan', 'PUT', {
+              nextDays: obState.horizon,
+              pct: obState.bufferPct,
+              goal: bufferGoal,
+              incomeSource: obState.incomeSource,
+              primaryGoal: obState.primaryGoal,
+              budgetStyle: obState.budgetStyle,
+              topCategories: obState.topCategories
+            });
+
+            // 2. Add starting funds transaction if positive
+            if (obState.balance > 0) {
+              await api('/transactions', 'POST', {
+                type: 'inc',
+                title: `Starting Balance (${obState.incomeSource})`,
+                amount: obState.balance,
+                category: 'Pocket money'
+              });
+            }
+
+            // 3. Add bill if specified
+            if (obState.hasBill && obState.billAmount > 0) {
+              await api('/bills', 'POST', {
+                name: obState.billName || 'Fixed Bill',
+                amount: obState.billAmount,
+                dueInDays: obState.billDays || 5
+              });
+            }
+
+            // 4. Mark onboarded in localStorage
+            localStorage.setItem('trace_onboarded', 'true');
+
+            // 5. Transition to Dashboard
+            const onboardingView = $('onboardingView');
+            const appLayout = $('appLayout');
+            const bottomNav = document.querySelector('.bottom-nav');
+
+            if (onboardingView) onboardingView.style.display = 'none';
+            if (appLayout) appLayout.style.display = 'flex';
+            if (bottomNav) bottomNav.style.display = '';
+
+            await refreshState();
+            switchTab('overview');
+            Motion.toast('Setup complete! Your calibrated profile is active.');
+            Motion.haptic(30);
+          } catch (err) {
+            console.error('Failed to submit onboarding:', err);
+            Motion.toast('Error saving setup: ' + (err.message || 'Please try again'));
+            Motion.haptic(40);
+          } finally {
+            obNextBtn.disabled = false;
+            obNextBtn.classList.remove('loading');
+          }
+        }
+      });
+    }
+
+    // Skip Onboarding Button
+    if (skipBtn) {
+      skipBtn.addEventListener('click', async () => {
+        localStorage.setItem('trace_onboarded', 'true');
+        const onboardingView = $('onboardingView');
+        const appLayout = $('appLayout');
+        const bottomNav = document.querySelector('.bottom-nav');
+
+        if (onboardingView) onboardingView.style.display = 'none';
+        if (appLayout) appLayout.style.display = 'flex';
+        if (bottomNav) bottomNav.style.display = '';
+
+        await refreshState();
+        switchTab('overview');
+        Motion.toast('Skipped to dashboard. You can customize anytime in Plan.');
+        Motion.haptic(10);
+      });
+    }
+
+    // Recalibrate Button in Plan View
+    if (recalibrateBtn) {
+      recalibrateBtn.addEventListener('click', () => {
+        localStorage.removeItem('trace_onboarded');
+        const auth = getStoredAuth();
+        if (auth) {
+          goToObStep(1);
+          updateAuthUI(auth);
+          Motion.toast('Calibration Wizard opened.');
+          Motion.haptic(10);
+        }
+      });
+    }
+  }
+
+  // Allow recalibrating onboarding from console or scripts
+  window.recalibrateOnboarding = function() {
+    localStorage.removeItem('trace_onboarded');
+    const auth = getStoredAuth();
+    if (auth) {
+      goToObStep(1);
+      updateAuthUI(auth);
+    }
+  };
+
+  function setupAuthEvents() {
+    const loginForm = $('loginForm');
+    const loginEmail = $('loginEmail');
+    const loginPassword = $('loginPassword');
+    const loginError = $('loginError');
+    const loginErrorMsg = $('loginErrorMsg');
+    const loginSubmitBtn = $('loginSubmitBtn');
+    const togglePasswordBtn = $('togglePasswordBtn');
+    const forgotPwLink = $('forgotPwLink');
+    const logoutBtn = $('logoutBtn');
+    const topbarLogoutBtn = $('topbarLogoutBtn');
+
+    // Forgot password hint
+    if (forgotPwLink) {
+      forgotPwLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        Motion.toast('Password reset request logged. Contact your administrator.');
+        Motion.haptic(10);
+      });
+    }
+
+    // Toggle password visibility
+    if (togglePasswordBtn && loginPassword) {
+      togglePasswordBtn.addEventListener('click', () => {
+        const isPw = loginPassword.type === 'password';
+        loginPassword.type = isPw ? 'text' : 'password';
+        togglePasswordBtn.innerHTML = isPw
+          ? `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`
+          : `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
+      });
+    }
+
+    // Handle Login Form Submit
+    if (loginForm) {
+      loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = (loginEmail?.value || '').trim();
+        const password = loginPassword?.value || '';
+
+        if (!email || !password) {
+          if (loginError) {
+            loginError.style.display = 'flex';
+            if (loginErrorMsg) loginErrorMsg.textContent = 'Please provide both email and password.';
+          }
+          return;
+        }
+
+        if (loginSubmitBtn) {
+          loginSubmitBtn.disabled = true;
+          loginSubmitBtn.classList.add('loading');
+        }
+
+        try {
+          // Attempt backend authentication
+          let authSuccess = false;
+          let userData = null;
+
+          try {
+            const res = await fetch('/api/auth/login', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email, password })
+            });
+            const data = await res.json();
+            if (data.success) {
+              authSuccess = true;
+              userData = data.user;
+            } else {
+              throw new Error(data.error || 'Invalid credentials');
+            }
+          } catch (apiErr) {
+            // Local fallback validation matching requested credentials
+            if (email.toLowerCase() === REGISTERED_CREDENTIALS.email.toLowerCase() && password === REGISTERED_CREDENTIALS.password) {
+              authSuccess = true;
+              userData = { email: REGISTERED_CREDENTIALS.email, name: 'Trace User' };
+            } else {
+              throw apiErr;
+            }
+          }
+
+          if (authSuccess && userData) {
+            setStoredAuth(userData);
+            if (loginError) loginError.style.display = 'none';
+            updateAuthUI(userData);
+            Motion.toast(`Welcome back, ${userData.email}!`);
+            Motion.haptic(20);
+            await refreshState();
+            const isOnboarded = localStorage.getItem('trace_onboarded') === 'true';
+            if (isOnboarded) {
+              const initialTab = location.hash.slice(1) || 'overview';
+              switchTab(initialTab);
+            }
+          }
+        } catch (err) {
+          if (loginError) {
+            loginError.style.display = 'flex';
+            if (loginErrorMsg) loginErrorMsg.textContent = err.message || 'Invalid email or password.';
+          }
+          Motion.haptic(50);
+        } finally {
+          if (loginSubmitBtn) {
+            loginSubmitBtn.disabled = false;
+            loginSubmitBtn.classList.remove('loading');
+          }
+        }
+      });
+    }
+
+    // Logout Action Handlers
+    function handleLogout() {
+      clearStoredAuth();
+      updateAuthUI(null);
+      if (loginPassword) loginPassword.value = '';
+      Motion.toast('Signed out successfully.');
+      Motion.haptic(10);
+    }
+
+    if (logoutBtn) logoutBtn.addEventListener('click', handleLogout);
+    if (topbarLogoutBtn) topbarLogoutBtn.addEventListener('click', handleLogout);
+  }
+
   function escapeHtml(str) {
     if (!str) return '';
     return String(str).replace(/[&<>"']/g, c => ({
@@ -1258,12 +1973,28 @@
       (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
     applyTheme(savedTheme);
 
+    setupAuthEvents();
+    setupOnboardingEvents();
     setupEventListeners();
 
-    // Check initial hash
-    const initialTab = location.hash.slice(1) || 'overview';
-    await refreshState();
-    switchTab(initialTab);
+    // Check auth status
+    const auth = getStoredAuth();
+
+    if (auth) {
+      await refreshState();
+      // If backend reports uncalibrated/0 data, ensure user gets asked into onboarding
+      if (!appState || !appState.financials || appState.financials.isOnboarded === false) {
+        try { localStorage.removeItem('trace_onboarded'); } catch (e) { }
+      }
+      updateAuthUI(auth);
+      const isCompleted = localStorage.getItem('trace_onboarded') === 'true';
+      if (isCompleted && location.hash !== '#onboarding' && location.hash !== '#setup') {
+        const initialTab = location.hash.slice(1) || 'overview';
+        switchTab(initialTab);
+      }
+    } else {
+      updateAuthUI(null);
+    }
   }
 
   // Start app when DOM is ready
